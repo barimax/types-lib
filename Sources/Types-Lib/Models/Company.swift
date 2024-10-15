@@ -7,7 +7,7 @@
 import Vapor
 import Fluent
 
-public final class Company: Model, Content{
+final class Company: Model, Content{
 
     static let schema: String = "companies"
     

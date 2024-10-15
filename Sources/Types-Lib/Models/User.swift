@@ -8,7 +8,7 @@
 import Vapor
 import Fluent
 
-enum UserRole: String, Codable, OptionableEnumProtocol {
+enum UserRole: String, Codable {
     
     static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         return try await database.enum("user_role")
@@ -49,19 +49,8 @@ enum UserRole: String, Codable, OptionableEnumProtocol {
     }
 }
 
-final class User: Model, Content, EntityModelProtocol, OptionableEntityProtocol {
+final class User: Model, Content {
     
-    static var entityConfiguration: EntityConfiguration = EntityConfiguration(
-        singleName: "Потребител",
-        pluralName: "Потребители",
-        fields: [
-            EntityProperty<User, String>(keyField: "name", name: "name", fieldType: .text, dataType: .string, label: "Име", order: 1),
-            EntityProperty<User, String>(keyField: "email", name: "email", fieldType: .text, dataType: .string, label: "Имейл", order: 2),
-            EntityProperty<User, UserRole>(keyField: "user_role", name: "userRole", fieldType: .select, dataType: .string, label: "Роля", order: 3, ref: UserRole.self),
-        ],
-        searchableDBFields: ["name"],
-        titleFieldName: "name"
-    )
     static let schema: String = "users"
     static var optionField: AnyKeyPath = \User.name
     static var registerName: String = "user"
