@@ -112,33 +112,33 @@ public extension User {
     static func generateCode() -> String { String(UInt32.random(in: 100000...999999)) }
     
     struct Create: Content {
-        var name: String
-        var email: String
-        var password: String
-        var confirmPassword: String
+        public var name: String
+        public var email: String
+        public var password: String
+        public var confirmPassword: String
     }
     
     struct CreateCompanyOwner: Content {
-        var name: String
-        var email: String
-        var password: String
-        var confirmPassword: String
-        var companyName: String
-        var companyUIN: String
-        var companyAddress: String
+        public var name: String
+        public var email: String
+        public var password: String
+        public var confirmPassword: String
+        public var companyName: String
+        public var companyUIN: String
+        public var companyAddress: String
     }
     struct Confirm: Content {
-        var email: String
-        var code: String
+        public var email: String
+        public var code: String
     }
     struct Forgot: Content {
-        var email: String
+        public var email: String
     }
     struct ResetPassword: Content {
-        var email: String
-        var code: String
-        var password: String
-        var confirmPassword: String
+        public var email: String
+        public var code: String
+        public var password: String
+        public var confirmPassword: String
     }
 }
 extension User.Create: Validatable {
