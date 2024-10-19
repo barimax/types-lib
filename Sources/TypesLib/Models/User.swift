@@ -10,7 +10,7 @@ import Fluent
 
 public enum UserRole: String, Codable {
     
-    static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
+    public static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         return try await database.enum("user_role")
             .case(Self.admin.rawValue)
             .case(Self.user.rawValue)
@@ -20,11 +20,11 @@ public enum UserRole: String, Codable {
             .create()
     }
 
-    static var registerName: String = "userRole"
+    public static var registerName: String = "userRole"
     
     case admin, user, guest, unconfirmed, unconfirmedAdmin
     
-    var needNewCode: Bool {
+    public var needNewCode: Bool {
         switch(self){
         case .unconfirmed, .unconfirmedAdmin:
             return true

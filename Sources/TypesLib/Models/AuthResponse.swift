@@ -13,7 +13,7 @@ public struct AuthResponse: Content, Codable {
     public let companies: [Company]
     public let user: User
     
-    init(
+   public init(
         token: String,
         companies: [Company],
         user: User
