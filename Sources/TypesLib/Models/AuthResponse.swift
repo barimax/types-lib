@@ -7,7 +7,7 @@
 
 import Vapor
 
-struct AuthResponse: Content, Codable {
+public struct AuthResponse: Content, Codable {
     
     let token: String
     let companies: [Company]

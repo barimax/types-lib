@@ -9,11 +9,11 @@
 @preconcurrency import Vapor
 
 @preconcurrency
-final class Token: Model, Content {
-    static let schema = "tokens"
+public final class Token: Model, Content {
+    public static let schema = "tokens"
 
     @ID(key: .id)
-    var id: UUID?
+    public var id: UUID?
 
     @Field(key: "value")
     var value: String
@@ -21,9 +21,9 @@ final class Token: Model, Content {
     @Parent(key: "user_id")
     var user: User
 
-    init() {}
+    public init() {}
 
-    init(id: UUID? = nil, value: String, userID: User.IDValue) {
+    public init(id: UUID? = nil, value: String, userID: User.IDValue) {
         self.id = id
         self.value = value
         self.$user.id = userID
@@ -34,15 +34,15 @@ final class Token: Model, Content {
 extension Token: ModelTokenAuthenticatable {
     
     
-    static let valueKey = \Token.$value
-    static let userKey = \Token.$user
+    public static let valueKey = \Token.$value
+    public static let userKey = \Token.$user
 
-    var isValid: Bool {
+    public var isValid: Bool {
         true
     }
 }
 
-extension User {
+public extension User {
     func generateToken() throws -> Token {
         try .init(
             value: [UInt8].random(count: 16).base64,

@@ -8,7 +8,7 @@
 import Vapor
 import Fluent
 
-enum UserRole: String, Codable {
+public enum UserRole: String, Codable {
     
     static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         return try await database.enum("user_role")
@@ -49,15 +49,15 @@ enum UserRole: String, Codable {
     }
 }
 
-final class User: Model, Content {
+public final class User: Model, Content {
     
-    static let schema: String = "users"
+    public static let schema: String = "users"
     static var optionField: AnyKeyPath = \User.name
     static var registerName: String = "user"
  
     
     @ID()
-    var id: UUID?
+    public var id: UUID?
     
     @Timestamp(key: "deleted_at", on: .delete)
     var deletedAt: Date?
@@ -93,9 +93,9 @@ final class User: Model, Content {
     var companies: [Company]
     
     
-    init() { }
+    public init() { }
 
-    init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, expire: Date?, companyID: Company.IDValue?) {
+    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, expire: Date?, companyID: Company.IDValue?) {
         self.id = id
         self.name = name
         self.email = email
@@ -107,7 +107,7 @@ final class User: Model, Content {
     }
 }
 
-extension User {
+public extension User {
     
     static func generateCode() -> String { String(UInt32.random(in: 100000...999999)) }
     
@@ -142,7 +142,7 @@ extension User {
     }
 }
 extension User.Create: Validatable {
-    static func validations(_ validations: inout Validations) {
+    public static func validations(_ validations: inout Validations) {
         validations.add("name", as: String.self, is: !.empty)
         validations.add("email", as: String.self, is: .email)
         validations.add("password", as: String.self, is: .count(8...))
@@ -150,7 +150,7 @@ extension User.Create: Validatable {
 }
 
 extension User.CreateCompanyOwner: Validatable {
-    static func validations(_ validations: inout Validations) {
+    public static func validations(_ validations: inout Validations) {
         validations.add("name", as: String.self, is: !.empty)
         validations.add("email", as: String.self, is: .email)
         validations.add("companyName", as: String.self, is: !.empty)
@@ -162,17 +162,17 @@ extension User.CreateCompanyOwner: Validatable {
 }
 
 extension User.Confirm: Validatable {
-    static func validations(_ validations: inout Validations) {
+    public static func validations(_ validations: inout Validations) {
         validations.add("email", as: String.self, is: .email)
         validations.add("code", as: String.self, is: .count(6...6))
     }
 }
 
 extension User: ModelAuthenticatable {
-    static let usernameKey = \User.$email
-    static let passwordHashKey = \User.$passwordHash
+    public static let usernameKey = \User.$email
+    public static let passwordHashKey = \User.$passwordHash
 
-    func verify(password: String) throws -> Bool {
+    public func verify(password: String) throws -> Bool {
         print("[JORO] verify user")
         return try Bcrypt.verify(password, created: self.passwordHash)
     }

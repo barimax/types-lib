@@ -7,12 +7,12 @@
 import Vapor
 import Fluent
 
-final class Company: Model, Content{
+public final class Company: Model, Content{
 
-    static let schema: String = "companies"
+    public static let schema: String = "companies"
     
     @ID()
-    var id: UUID?
+    public var id: UUID?
     
     @Timestamp(key: "deleted_at", on: .delete)
     var deletedAt: Date?
@@ -37,9 +37,9 @@ final class Company: Model, Content{
     
     var local: Bool = false
 
-    init() { }
+    public init() { }
 
-    init(id: UUID? = nil, name: String, uid: String, address: String, database db: String) {
+    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String) {
         self.id = id
         self.name = name
         self.uid = uid
