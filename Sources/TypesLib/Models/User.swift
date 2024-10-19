@@ -69,28 +69,28 @@ public final class User: Model, Content {
     var updatedAt: Date?
     
     @Field(key: "name")
-    var name: String
+    public var name: String
 
     @Field(key: "email")
-    var email: String
+    public var email: String
 
     @Field(key: "password_hash")
-    var passwordHash: String
+    public var passwordHash: String
     
     @Field(key: "user_role")
-    var userRole: UserRole
+    public var userRole: UserRole
     
     @OptionalField(key: "confirmation_code")
-    var confirmationCode: String?
+    public var confirmationCode: String?
     
     @Timestamp(key: "confirmation_expire", on: .none)
-    var expire: Date?
+    public var expire: Date?
     
     @OptionalParent(key: "company_id")
-    var company: Company?
+    public var company: Company?
     
     @Siblings(through: UserCompanyRelation.self, from: \.$user, to: \.$company)
-    var companies: [Company]
+    public var companies: [Company]
     
     
     public init() { }

@@ -28,19 +28,19 @@ public final class Accountant: Model, Content {
     var updatedAt: Date?
     
     @Field(key: "name")
-    var name: String
+    public var name: String
 
     @Field(key: "email")
-    var email: String
+    public var email: String
 
     @Field(key: "password_hash")
-    var accTokenHash: String
+    public var accTokenHash: String
     
     @Field(key: "approved")
-    var approved: Bool
+    public var approved: Bool
     
     @Field(key: "companies")
-    var companies: [Company]
+    public var companies: [Company]
     
     
     

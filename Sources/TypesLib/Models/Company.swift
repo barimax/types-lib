@@ -24,18 +24,18 @@ public final class Company: Model, Content{
     var updatedAt: Date?
     
     @Field(key: "name")
-    var name: String
+    public var name: String
 
     @Field(key: "uin")
-    var uid: String
+    public var uid: String
 
     @Field(key: "address")
-    var address: String
+    public var address: String
     
     @Field(key: "database")
-    var database: String
+    public var database: String
     
-    var local: Bool = false
+    public var local: Bool = false
 
     public init() { }
 

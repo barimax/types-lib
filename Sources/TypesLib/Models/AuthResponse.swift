@@ -9,9 +9,9 @@ import Vapor
 
 public struct AuthResponse: Content, Codable {
     
-    let token: String
-    let companies: [Company]
-    let user: User
+    public let token: String
+    public let companies: [Company]
+    public let user: User
     
     init(
         token: String,
