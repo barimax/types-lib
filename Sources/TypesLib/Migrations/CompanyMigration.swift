@@ -22,6 +22,7 @@ extension Company {
                 .field("address", .string, .required)
                 .field("uin", .string, .required)
                 .field("database", .string, .required)
+                .field("configuration", .json)
                 .create()
         }
 

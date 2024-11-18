@@ -7,7 +7,7 @@
 import Vapor
 import Fluent
 
-public final class Company: Model, Content{
+public final class Company: Model, Content, @unchecked Sendable {
 
     public static let schema: String = "companies"
     
@@ -34,6 +34,9 @@ public final class Company: Model, Content{
     
     @Field(key: "database")
     public var database: String
+    
+    @OptionalField(key: "configuration")
+    public var configuration: CompanyConfiguration?
     
     public var local: Bool = false
 
