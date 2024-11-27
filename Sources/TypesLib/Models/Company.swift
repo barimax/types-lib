@@ -53,6 +53,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     public struct Create: Content {
         public let name: String
         public let uid: String
+        public let address: String
         public let clientsAccount: Int?
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
@@ -64,10 +65,28 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let id: UUID
         public let name: String
         public let uid: String
+        public let address: String
         public let clientsAccount: Int?
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
         public let register: Int?
+    }
+}
+
+extension Company.Create: Validatable {
+    public static func validations(_ validations: inout Validations) {
+        validations.add("name", as: String.self, is: !.empty)
+        validations.add("uid", as: String.self, is: !.empty)
+        validations.add("address", as: String.self, is: !.empty)
+    }
+}
+
+extension Company.Update: Validatable {
+    public static func validations(_ validations: inout Validations) {
+        validations.add("id", as: UUID.self, is: .valid)
+        validations.add("name", as: String.self, is: !.empty)
+        validations.add("uid", as: String.self, is: !.empty)
+        validations.add("address", as: String.self, is: !.empty)
     }
 }
