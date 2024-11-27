@@ -6,8 +6,9 @@
 //
 
 public protocol PartnerCodable: Codable {
+    associatedtype C: PartnerConfigurationProtocol
     var name: String { get set }
     var uid: String? { get set }
     var address: String? { get set }
-    var configuration: PartnerConfigurationProtocol? { get set }
+    var configuration: C? { get set }
 }
