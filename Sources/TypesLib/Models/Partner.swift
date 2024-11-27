@@ -5,7 +5,7 @@
 //  Created by Georgie Ivanov on 27.11.24.
 //
 import Vapor
-open class PartnerCodable: Codable {
+open class PartnerCodable: NSObject, Codable {
     public var name: String
     public var uid: String
     public var address: String
