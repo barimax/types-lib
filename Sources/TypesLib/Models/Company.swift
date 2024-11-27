@@ -49,4 +49,25 @@ public final class Company: Model, Content, @unchecked Sendable {
         self.address = address
         self.database = db
     }
+    
+    public struct Create: Content {
+        let name: String
+        let uid: String
+        let clientsAccount: Int?
+        let suppliersAccount: Int?
+        let bankCostsAccount: Int?
+        let cashAccount: Int?
+        let register: Int?
+    }
+    
+    public struct Update: Content {
+        let id: UUID
+        let name: String
+        let uid: String
+        let clientsAccount: Int?
+        let suppliersAccount: Int?
+        let bankCostsAccount: Int?
+        let cashAccount: Int?
+        let register: Int?
+    }
 }
