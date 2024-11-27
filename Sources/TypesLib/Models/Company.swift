@@ -51,23 +51,23 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     public struct Create: Content {
-        let name: String
-        let uid: String
-        let clientsAccount: Int?
-        let suppliersAccount: Int?
-        let bankCostsAccount: Int?
-        let cashAccount: Int?
-        let register: Int?
+        public let name: String
+        public let uid: String
+        public let clientsAccount: Int?
+        public let suppliersAccount: Int?
+        public let bankCostsAccount: Int?
+        public let cashAccount: Int?
+        public let register: Int?
     }
     
     public struct Update: Content {
-        let id: UUID
-        let name: String
-        let uid: String
-        let clientsAccount: Int?
-        let suppliersAccount: Int?
-        let bankCostsAccount: Int?
-        let cashAccount: Int?
-        let register: Int?
+        public let id: UUID
+        public let name: String
+        public let uid: String
+        public let clientsAccount: Int?
+        public let suppliersAccount: Int?
+        public let bankCostsAccount: Int?
+        public let cashAccount: Int?
+        public let register: Int?
     }
 }
