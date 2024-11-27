@@ -6,10 +6,10 @@
 //
 import Vapor
 open class PartnerCodable: NSObject, Codable {
-    public var name: String
-    public var uid: String
-    public var address: String
-    public var configuration: PartnerConfiguration
+    open var name: String
+    open var uid: String
+    open var address: String?
+    open var configuration: PartnerConfiguration
     
     public init(name: String, uid: String, address: String, configuration: PartnerConfiguration) {
         self.name = name
