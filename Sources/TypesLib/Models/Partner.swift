@@ -4,7 +4,17 @@
 //
 //  Created by Georgie Ivanov on 27.11.24.
 //
-
-class CompanyPartner {
+import Vapor
+public class Partner: Codable {
+    public var name: String
+    public var uid: String
+    public var address: String
+    public var configuration: PartnerConfiguration
     
+    public init(name: String, uid: String, address: String, configuration: PartnerConfiguration) {
+        self.name = name
+        self.uid = uid
+        self.address = address
+        self.configuration = configuration
+    }
 }
