@@ -42,12 +42,13 @@ public final class Company: Model, Content, @unchecked Sendable {
 
     public init() { }
 
-    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String) {
+    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String, configuration c: CompanyConfiguration) {
         self.id = id
         self.name = name
         self.uid = uid
         self.address = address
         self.database = db
+        self.configuration = c
     }
     
     public struct Create: Content {
