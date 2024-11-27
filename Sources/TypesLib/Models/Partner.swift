@@ -5,7 +5,7 @@
 //  Created by Georgie Ivanov on 27.11.24.
 //
 import Vapor
-public class Partner: Codable {
+open class PartnerCodable: Codable {
     public var name: String
     public var uid: String
     public var address: String
