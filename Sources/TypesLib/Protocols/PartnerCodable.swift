@@ -9,5 +9,5 @@ public protocol PartnerCodable: Codable {
     var name: String { get set }
     var uid: String? { get set }
     var address: String? { get set }
-    var configuration: PartnerConfiguration? { get set }
+    var configuration: PartnerConfigurationProtocol? { get set }
 }
