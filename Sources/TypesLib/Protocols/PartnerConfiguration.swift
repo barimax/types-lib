@@ -5,6 +5,6 @@
 //  Created by Georgie Ivanov on 27.11.24.
 //
 
-//public protocol PartnerConfigurationProtocol: Codable {
-//    var bankAccounts: [BankAccount]? { get set }
-//}
+public protocol PartnerConfigurationProtocol: Codable {
+    var bankAccounts: [BankAccount]? { get set }
+}

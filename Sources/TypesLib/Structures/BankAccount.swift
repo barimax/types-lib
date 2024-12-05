@@ -8,9 +8,9 @@
 import Vapor
 import Fluent
 
-public final class BankAccount: Codable, Sendable {
+public class BankAccount: PartnerBankAccountProtocol {
     
-    public let bic: String
+    public let bic: String?
     public let name: String
     public let iban: String
     public let currency: Currency
