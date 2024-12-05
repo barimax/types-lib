@@ -6,5 +6,6 @@
 //
 
 public protocol PartnerConfigurationProtocol: Codable {
-    var bankAccounts: [BankAccount]? { get set }
+    associatedtype B: PartnerBankAccountProtocol
+    var bankAccounts: [B]? { get set }
 }
