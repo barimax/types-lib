@@ -32,8 +32,8 @@ public final class Company: Model, Content, @unchecked Sendable {
     @OptionalField(key: "address")
     public var address: String?
     
-    @Field(key: "database")
-    public var database: String
+    @OptionalField(key: "database")
+    public var database: String?
     
     @OptionalField(key: "configuration")
     public var configuration: CompanyConfiguration?
