@@ -19,7 +19,7 @@ extension Company {
                 .field("created_at", .datetime)
                 .field("updated_at", .datetime)
                 .field("name", .string, .required)
-                .field("address", .string, .required)
+                .field("address", .string)
                 .field("uin", .string, .required)
                 .field("database", .string, .required)
                 .field("configuration", .json)
