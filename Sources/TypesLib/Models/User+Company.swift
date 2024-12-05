@@ -8,18 +8,18 @@
 import Vapor
 import Fluent
 
-final class UserCompanyRelation: Model {
+public final class UserCompanyRelation: Model {
     
     public static let schema: String = "user+company"
     
     @ID()
-    var id: UUID?
+    public var id: UUID?
     
     @Parent(key: "user_id")
-    var user: User
+    public var user: User
     
     @Parent(key: "company_id")
-    var company: Company
+    public var company: Company
     
     public init() {}
     
