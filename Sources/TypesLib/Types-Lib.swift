@@ -1,9 +1,9 @@
 import Vapor
 import Fluent
 
-class Configuration {
-    static var encoder: JSONEncoder = JSONEncoder()
-    static var decoder: JSONDecoder = JSONDecoder()
+public class Configuration {
+    public static var encoder: JSONEncoder = JSONEncoder()
+    public static var decoder: JSONDecoder = JSONDecoder()
 }
 
 public extension Application {
