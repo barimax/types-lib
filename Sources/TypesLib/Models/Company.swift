@@ -73,6 +73,23 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let cashAccount: Int?
         public let register: Int?
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(deletedAt, forKey: .deletedAt)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(name, forKey: .name)
+        try container.encode(uid, forKey: .uid)
+        try container.encode(address, forKey: .address)
+        try container.encode(configuration, forKey: .configuration)
+        try container.encode(local, forKey: .local)
+    }
 }
 
 extension Company.Create: Validatable {
