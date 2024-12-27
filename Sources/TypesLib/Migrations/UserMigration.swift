@@ -26,7 +26,6 @@ extension User {
                 .field("user_role", userRole, .required)
                 .field("confirmation_code", .string)
                 .field("confirmation_expire", .datetime)
-                .field("company_id", .uuid, .references(Company.schema, "id"))
                 .create()
         }
 

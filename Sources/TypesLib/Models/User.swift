@@ -86,16 +86,13 @@ public final class User: Model, Content {
     @Timestamp(key: "confirmation_expire", on: .none)
     public var expire: Date?
     
-    @OptionalParent(key: "company_id")
-    public var company: Company?
-    
     @Siblings(through: UserCompanyRelation.self, from: \.$user, to: \.$company)
     public var companies: [Company]
     
     
     public init() { }
 
-    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, expire: Date?, companyID: Company.IDValue?) {
+    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, expire: Date?) {
         self.id = id
         self.name = name
         self.email = email
@@ -103,7 +100,6 @@ public final class User: Model, Content {
         self.userRole = userRole
         self.confirmationCode = confirmationCode
         self.expire = expire
-        self.$company.id = companyID
     }
 }
 
