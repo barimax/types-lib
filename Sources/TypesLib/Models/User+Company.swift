@@ -23,4 +23,9 @@ public final class UserCompanyRelation: Model {
     
     public init() {}
     
+    public init(user: User, company: Company) {
+        self.user = user
+        self.company = company
+    }
+    
 }

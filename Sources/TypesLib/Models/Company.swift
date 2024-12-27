@@ -38,17 +38,21 @@ public final class Company: Model, Content, @unchecked Sendable {
     @OptionalField(key: "configuration")
     public var configuration: CompanyConfiguration?
     
+    @Field(key: "owner")
+    public var owner: UUID
+    
     public var local: Bool = false
 
     public init() { }
 
-    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration) {
+    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration, owner o: UUID) {
         self.id = id
         self.name = name
         self.uid = uid
         self.address = address
         self.database = db
         self.configuration = c
+        self.owner = o
     }
     
     public struct Create: Content {
@@ -90,6 +94,30 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
     }
+    
+    public func attachLocalCompany(user: User, on db: Database) async throws {
+        let relation = UserCompanyRelation(user: user, company: self)
+        try await relation.create(on: db)
+    }
+    
+    public func detachLocalCompany(user: User, on db: Database) async throws {
+        let relation = UserCompanyRelation(user: user, company: self)
+        try await relation.delete(force: true, on: db)
+    }
+    
+    public func changeOwner(to user: User, on db: Database) async throws {
+        self.owner = try user.requireID()
+        try await self.save(on: db)
+    }
+    
+    func delete(force: Bool = false, on database: any Database) async throws {
+        try await database.transaction { db in
+            try await UserCompanyRelation.query(on: db).filter(\UserCompanyRelation.$company.$id, .equal, self.requireID()).delete(force: true)
+            try await self.delete(force: force, on: db).get()
+        }
+        
+    }
+   
 }
 
 extension Company.Create: Validatable {
