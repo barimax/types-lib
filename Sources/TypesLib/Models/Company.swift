@@ -54,7 +54,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     public struct Create: Content {
         public let name: String
         public let uid: String
-        public let address: String?
+        public let address: String
         public let clientsAccount: Int?
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
@@ -66,7 +66,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let id: UUID
         public let name: String
         public let uid: String
-        public let address: String?
+        public let address: String
         public let clientsAccount: Int?
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
