@@ -79,7 +79,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local
+        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -93,6 +93,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(address, forKey: .address)
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
+        try container.encode(owner, forKey: .owner)
     }
     
     public func attachLocalCompany(user: User, on db: Database) async throws {
