@@ -23,3 +23,14 @@ public struct AuthResponse: Content, Codable {
         self.user = user
     }
 }
+
+public struct UserResponse: Content, Codable {
+
+   public let user: User
+    
+   public init(
+        user: User
+    ) {
+        self.user = user
+    }
+}
