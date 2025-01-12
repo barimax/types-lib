@@ -13,7 +13,7 @@ public class BankAccount: PartnerBankAccountProtocol {
     public let bic: String?
     public let name: String
     public let iban: String
-    public let currency: Currency
+    public let currency: Currency?
     public let bankAccount: Int
     public let clientsAccount: Int?
     public let suppliersAccount: Int?
@@ -42,36 +42,36 @@ public class BankAccount: PartnerBankAccountProtocol {
         self.accountDetails = accountDetails
     }
     
-    public struct Create: Content {
-        let iban: String
-        let currency: Currency
-        let bankAccount: Int
-        let clientsAccount: Int?
-        let suppliersAccount: Int?
-        let bankCostsAccount: Int?
-        let bankCostsSearch: String?
-        let cashAccount: Int?
-        let cashSearch: String?
-        let register: Int?
-        let accountCriteria: [BankAccount.AccountCriteria]?
-        let accountDetails: BankAccount.AccountDetails?
-    }
-    
-    public struct Update: Content {
-        let id: UUID
-        let iban: String
-        let currency: Currency
-        let bankAccount: Int
-        let clientsAccount: Int?
-        let suppliersAccount: Int?
-        let bankCostsAccount: Int?
-        let bankCostsSearch: String?
-        let cashAccount: Int?
-        let cashSearch: String?
-        let register: Int?
-        let accountCriteria: [BankAccount.AccountCriteria]?
-        let accountDetails: BankAccount.AccountDetails?
-    }
+//    public struct Create: Content {
+//        let iban: String
+//        let currency: Currency
+//        let bankAccount: Int
+//        let clientsAccount: Int?
+//        let suppliersAccount: Int?
+//        let bankCostsAccount: Int?
+//        let bankCostsSearch: String?
+//        let cashAccount: Int?
+//        let cashSearch: String?
+//        let register: Int?
+//        let accountCriteria: [BankAccount.AccountCriteria]?
+//        let accountDetails: BankAccount.AccountDetails?
+//    }
+//    
+//    public struct Update: Content {
+//        let id: UUID
+//        let iban: String
+//        let currency: Currency
+//        let bankAccount: Int
+//        let clientsAccount: Int?
+//        let suppliersAccount: Int?
+//        let bankCostsAccount: Int?
+//        let bankCostsSearch: String?
+//        let cashAccount: Int?
+//        let cashSearch: String?
+//        let register: Int?
+//        let accountCriteria: [BankAccount.AccountCriteria]?
+//        let accountDetails: BankAccount.AccountDetails?
+//    }
     
     public struct AccountCriteria: Codable, Sendable {
         let account:  Int
@@ -93,19 +93,11 @@ public class BankAccount: PartnerBankAccountProtocol {
     }
 
 }
-extension BankAccount.Create: Validatable {
+extension BankAccount: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("iban", as: String.self, is: !.empty)
-        validations.add("currency", as: Currency.self, is: .valid)
-        validations.add("bankAccount", as: Int.self, is: .valid)
+        validations.add("name", as: String.self, is: !.empty)
     }
 }
 
-extension BankAccount.Update: Validatable {
-    public static func validations(_ validations: inout Validations) {
-        validations.add("id", as: UUID.self, is: .valid)
-        validations.add("iban", as: String.self, is: !.empty)
-        validations.add("currency", as: Currency.self, is: .valid)
-        validations.add("bankAccount", as: Int.self, is: .valid)
-    }
-}
+
