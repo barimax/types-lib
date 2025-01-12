@@ -13,7 +13,7 @@ public class BankAccount: PartnerBankAccountProtocol {
     public let bic: String?
     public let name: String
     public let iban: String
-    public let currency: Currency?
+    public let currency: Currency
     public let bankAccount: Int
     public let clientsAccount: Int?
     public let suppliersAccount: Int?
