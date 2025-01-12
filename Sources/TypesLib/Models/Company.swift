@@ -64,6 +64,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
         public let register: Int?
+        public let bankAccounts: [BankAccount]
     }
     
     public struct Update: Content {
@@ -76,6 +77,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
         public let register: Int?
+        public let bankAccounts: [BankAccount]
     }
     
     enum CodingKeys: String, CodingKey {
