@@ -5,7 +5,7 @@
 //  Created by Georgie Ivanov on 4.12.24.
 //
 
-public enum Currency: Codable, Sendable {
+public enum Currency: String, Codable, Sendable {
     case bgn, eur, usd
 }
 
