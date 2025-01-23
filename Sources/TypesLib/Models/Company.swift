@@ -26,7 +26,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     @Field(key: "name")
     public var name: String
 
-    @Field(key: "uin")
+    @Field(key: "uid")
     public var uid: String
 
     @OptionalField(key: "address")
