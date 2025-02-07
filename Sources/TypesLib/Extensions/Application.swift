@@ -7,16 +7,17 @@
 import Vapor
 
 public extension Application {
-    struct SpiKey: StorageKey {
+    struct SpiURLKey: StorageKey {
         public typealias Value = String
     }
     
     var spiFullURLString: String? {
         get {
-            self.storage[SpiKey.self]
+            self.storage[SpiURLKey.self]
         }
         set {
-            self.storage[SpiKey.self] = newValue
+            self.storage[SpiURLKey.self] = newValue
         }
     }
+    
 }
