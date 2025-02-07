@@ -15,8 +15,10 @@ public extension Request {
               let url = self.application.spiFullURLString else {
             throw Abort(.unauthorized)
         }
-        let userResponse = try await self.client.get("\(url)/spi/user/get/\(userIDString)")
-        
+        let userResponse = try await self.client.get(
+            "\(url)/spi/user/get/\(userIDString)"
+        )
+        self.application.logger.debug("User: \(userResponse)")
         let user = try userResponse.content.decode(User.self)
         return user
     }
