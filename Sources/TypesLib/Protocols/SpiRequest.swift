@@ -1,15 +1,16 @@
 //
-//  Request.swift
+//  HiddenUser.swift
 //  types-lib
 //
 //  Created by Georgie Ivanov on 7.02.25.
 //
-
 import Vapor
+import Fluent
 
-public extension Request {
-
-    
+public protocol SpiRequest where Self: Request {
+    func user() async throws -> User
+}
+public extension SpiRequest {
     func user() async throws -> User {
         guard let userIDString = self.headers.first(name: "X-auth-user-id"),
               let token = self.headers.bearerAuthorization?.token,
