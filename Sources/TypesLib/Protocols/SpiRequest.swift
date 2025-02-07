@@ -14,7 +14,7 @@ public extension SpiRequest {
     func user() async throws -> User {
         guard let userIDString = self.headers.first(name: "X-auth-user-id"),
               let token = self.headers.bearerAuthorization?.token,
-              let url = self.application.spiFullURLString else {
+              let url = (self.application as? SpiApplication)?.spiFullURLString else {
             throw Abort(.unauthorized)
         }
         
