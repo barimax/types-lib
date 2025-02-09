@@ -35,7 +35,7 @@ public extension Application {
     }
 }
 
-func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [AsyncMigration]) throws {
+public func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [AsyncMigration]) throws {
     app.post("spi", "setNewDatabase", ":databaseID") { req async throws  -> HTTPStatus in
         guard let database = req.parameters.get("databaseID") else {
             throw Abort(.badRequest, reason: "Missing databaseID")
