@@ -44,14 +44,9 @@ public final class TypesLib {
             let databaseID = DatabaseID(string: database)
             var tls = TLSConfiguration.makeClientConfiguration()
             tls.certificateVerification = .none
-            let mysqlConfig = MySQLConfiguration(
-                hostname: configuration.username,
-                username: configuration.username,
-                password: configuration.password,
-                database: database,
-                tlsConfiguration: tls
-            )
-            
+            var mysqlConfig = configuration
+            mysqlConfig.database = database
+            mysqlConfig.tlsConfiguration = tls
             app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
             app.migrations.add(migrations, to: databaseID)
             try await app.autoMigrate()
