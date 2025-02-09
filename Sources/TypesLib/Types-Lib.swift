@@ -53,7 +53,7 @@ public final class TypesLib {
             )
             
             app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
-            app.migrations.add(migrations)
+            app.migrations.add(migrations, to: databaseID)
             try await app.autoMigrate()
             
             return .ok
