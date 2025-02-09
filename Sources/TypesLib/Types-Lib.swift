@@ -1,5 +1,7 @@
 import Vapor
 import Fluent
+import MySQLKit
+import FluentMySQLDriver
 
 public class Configuration {
     public static var encoder: JSONEncoder = JSONEncoder()
@@ -7,6 +9,8 @@ public class Configuration {
 }
 
 public extension Application {
+    
+   
     func addTypesLibMigrations() {
         self.migrations.add(Company.Migration())
         self.migrations.add(User.Migration())
@@ -28,5 +32,29 @@ public extension Application {
         Configuration.decoder = decoder
         ContentConfiguration.global.use(decoder: decoder, for: .json)
         ContentConfiguration.global.use(encoder: encoder, for: .json)
+    }
+}
+
+func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [AsyncMigration]) throws {
+    app.post("spi", "setNewDatabase", ":databaseID") { req async throws  -> HTTPStatus in
+        guard let database = req.parameters.get("databaseID") else {
+            throw Abort(.badRequest, reason: "Missing databaseID")
+        }
+        let databaseID = DatabaseID(string: database)
+        var tls = TLSConfiguration.makeClientConfiguration()
+        tls.certificateVerification = .none
+        let mysqlConfig = MySQLConfiguration(
+            hostname: configuration.username,
+            username: configuration.username,
+            password: configuration.password,
+            database: database,
+            tlsConfiguration: tls
+        )
+        
+        app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
+        app.migrations.add(migrations)
+        try await app.autoMigrate()
+        
+        return .ok
     }
 }
