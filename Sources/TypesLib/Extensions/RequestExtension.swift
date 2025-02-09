@@ -9,6 +9,21 @@ import Vapor
 import Fluent
 
 public extension Request {
+    func authUser(token: String) async throws -> User {
+        guard let spiHost = self.headers.first(name: "X-spi-host") else {
+            throw Abort(.unauthorized)
+        }
+        let userResponse = try await self.client.get(
+            "http://\(spiHost)/spi/user/auth/",
+            headers: [
+                "Authorization": "Bearer \(token)",
+                "Content-Type": "application/json",
+            ]
+        )
+        self.application.logger.debug("User: \(userResponse)")
+        let user = try userResponse.content.decode(User.self)
+        return user
+    }
     func user() async throws -> User {
         guard let spiHost = self.headers.first(name: "X-spi-host"),
               let userIDString = self.headers.first(name: "X-auth-user-id"),
