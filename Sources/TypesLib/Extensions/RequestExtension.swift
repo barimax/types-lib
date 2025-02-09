@@ -74,4 +74,15 @@ public extension Request {
             )
         return try userResponse.content.decode(Company.self)
     }
+    
+    var userID: UUID? {
+        guard let userIDString = self.headers.first(name: "X-auth-user-id"),
+              let userUUID = UUID(uuidString: userIDString) else {
+            return nil
+        }
+        return userUUID
+    }
+    var companyDatabaseID: String? {
+        self.headers.first(name: "X-company-database")
+    }
 }
