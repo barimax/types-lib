@@ -46,8 +46,8 @@ public final class Company: Model, Content, @unchecked Sendable {
     
     public var local: Bool = false
     
-    @FieldProperty<UserCompanyRelation, [UserCompanyRole]>(key: "current_user_company_roles")
-    public var currentUserCompanyRoles: [UserCompanyRole]
+//    @FieldProperty<UserCompanyRelation, [UserCompanyRole]>(key: "current_user_company_roles")
+//    public var currentUserCompanyRoles: [UserCompanyRole]
 
     public init() { }
 
@@ -102,13 +102,13 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
         try container.encode(owner, forKey: .owner)
-        try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
+//        try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
     }
     
-    public func setUserCompanyRoles(_ roles: [UserCompanyRole]) {
-        self.currentUserCompanyRoles = roles
-    }
-    
+//    public func setUserCompanyRoles(_ roles: [UserCompanyRole]) {
+//        self.currentUserCompanyRoles = roles
+//    }
+//    
     @Sendable
     public static func getCompanies(req: Request) async throws -> [Company] {
         let user = try req.auth.require(User.self)
