@@ -46,7 +46,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     
     public var local: Bool = false
     
-    @Field(key: "user_company_roles")
+    @FieldProperty<UserCompanyRelation, [UserCompanyRole]>(key: "current_user_company_roles")
     public var currentUserCompanyRoles: [UserCompanyRole]
 
     public init() { }
