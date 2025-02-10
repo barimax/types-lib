@@ -14,8 +14,8 @@ public enum UserCompanyRole: String, Codable {
     case canEdit
     case canShare
     
-    static let owner: [UserCompanyRole] = [.canDelete, .canEdit, .canShare]
-    static let sharedWith: [UserCompanyRole] = [.canShare]
+    public static let owner: [UserCompanyRole] = [.canDelete, .canEdit, .canShare]
+    public static let sharedWith: [UserCompanyRole] = [.canShare]
 }
 
 public final class UserCompanyRelation: Model {
