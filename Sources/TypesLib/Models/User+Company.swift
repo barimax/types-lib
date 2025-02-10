@@ -8,6 +8,17 @@
 import Vapor
 import Fluent
 
+public enum UserCompanyRight: String, Codable {
+    case canShare
+    case canDelete
+    case canEdit
+}
+
+public enum UserCompanyRole: Codable {
+    case owner(with: [UserCompanyRight] = [.canShare, .canDelete, .canEdit])
+    case sharedWith(with: [UserCompanyRight] = [.canEdit])
+}
+
 public final class UserCompanyRelation: Model {
     
     public static let schema: String = "user+company"
@@ -21,11 +32,15 @@ public final class UserCompanyRelation: Model {
     @Parent(key: "company_id")
     public var company: Company
     
+    @Field(key: "user_company_role")
+    public var userCompanyRole: UserCompanyRole
+    
     public init() {}
     
-    public init(user: User, company: Company) {
+    public init(user: User, company: Company, userCompanyRole: UserCompanyRole) {
         self.user = user
         self.company = company
+        self.userCompanyRole = userCompanyRole
     }
     
 }

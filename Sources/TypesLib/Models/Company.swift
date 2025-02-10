@@ -101,28 +101,28 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(owner, forKey: .owner)
     }
     
-    public func attachLocalCompany(user: User, on db: Database) async throws {
-        let relation = UserCompanyRelation(user: user, company: self)
-        try await relation.create(on: db)
-    }
-    
-    public func detachLocalCompany(user: User, on db: Database) async throws {
-        let relation = UserCompanyRelation(user: user, company: self)
-        try await relation.delete(force: true, on: db)
-    }
+//    public func attachLocalCompany(user: User, on db: Database) async throws {
+//        let relation = UserCompanyRelation(user: user, company: self)
+//        try await relation.create(on: db)
+//    }
+//    
+//    public func detachLocalCompany(user: User, on db: Database) async throws {
+//        let relation = UserCompanyRelation(user: user, company: self)
+//        try await relation.delete(force: true, on: db)
+//    }
     
     public func changeOwner(to user: User, on db: Database) async throws {
         self.owner = try user.requireID()
         try await self.save(on: db)
     }
     
-    func delete(force: Bool = false, on database: any Database) async throws {
-        try await database.transaction { db in
-            try await UserCompanyRelation.query(on: db).filter(\UserCompanyRelation.$company.$id, .equal, self.requireID()).delete(force: true)
-            try await self.delete(force: force, on: db).get()
-        }
-        
-    }
+//    func delete(force: Bool = false, on database: any Database) async throws {
+//        try await database.transaction { db in
+//            try await UserCompanyRelation.query(on: db).filter(\UserCompanyRelation.$company.$id, .equal, self.requireID()).delete(force: true)
+//            try await self.delete(force: force, on: db).get()
+//        }
+//        
+//    }
 }
 
 extension Company.Create: Validatable {
