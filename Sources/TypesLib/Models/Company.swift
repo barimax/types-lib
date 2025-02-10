@@ -110,7 +110,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    public func getCompanies(req: Request) async throws -> [Company] {
+    public static func getCompanies(req: Request) async throws -> [Company] {
         let user = try req.auth.require(User.self)
         let companies = try await Company.query(on: req.db)
             .fields(for: Company.self)
