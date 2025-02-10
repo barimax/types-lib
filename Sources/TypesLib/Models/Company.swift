@@ -41,6 +41,9 @@ public final class Company: Model, Content, @unchecked Sendable {
     @Field(key: "owner")
     public var owner: UUID
     
+    @Siblings(through: UserCompanyRelation.self, from: \.$company, to: \.$user)
+    public var users: [User]
+    
     public var local: Bool = false
 
     public init() { }
@@ -120,7 +123,6 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         
     }
-   
 }
 
 extension Company.Create: Validatable {
@@ -137,3 +139,4 @@ extension Company.Update: Validatable {
         validations.add("uid", as: String.self, is: !.empty)
     }
 }
+
