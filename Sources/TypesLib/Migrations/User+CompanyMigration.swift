@@ -11,7 +11,7 @@ extension UserCompanyRelation {
                 .id()
                 .field("user_id", .uuid, .references(User.schema, "id"))
                 .field("company_id", .uuid, .references(Company.schema, "id"))
-                .field("user_company_role", .string, .required)
+                .field("user_company_roles", .string, .required)
                 .create()
         }
 
