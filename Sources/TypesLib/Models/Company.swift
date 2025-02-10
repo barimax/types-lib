@@ -45,6 +45,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     public var users: [User]
     
     public var local: Bool = false
+    public var currentUserCompanyRoles: [UserCompanyRole] = []
 
     public init() { }
 
@@ -84,7 +85,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner
+        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -99,6 +100,11 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
         try container.encode(owner, forKey: .owner)
+        try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
+    }
+    
+    public func setUserCompanyRoles(_ roles: [UserCompanyRole]) {
+        self.currentUserCompanyRoles = roles
     }
     
 //    public func attachLocalCompany(user: User, on db: Database) async throws {

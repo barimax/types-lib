@@ -20,10 +20,11 @@ extension Company {
                 .field("updated_at", .datetime)
                 .field("name", .string, .required)
                 .field("address", .string)
-                .field("uin", .string, .required)
+                .field("uid", .string, .required)
                 .field("database", .string)
                 .field("configuration", .json)
                 .field("owner", .uuid)
+                .unique(on: "uid", "owner")
                 .create()
         }
 
