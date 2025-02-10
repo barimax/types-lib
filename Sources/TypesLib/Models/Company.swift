@@ -111,13 +111,13 @@ public final class Company: Model, Content, @unchecked Sendable {
 //    
     @Sendable
     public static func getCompanies(req: Request) async throws -> [Company] {
-        let user = try req.auth.require(User.self)
-        let companies = try await Company.query(on: req.db)
-            .fields(for: Company.self)
-            .field(UserCompanyRelation.self, \UserCompanyRelation.$userCompanyRoles)
-            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
-            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
-            .all()
+//        let user = try req.auth.require(User.self)
+//        let companies = try await Company.query(on: req.db)
+//            .fields(for: Company.self)
+//            .field(UserCompanyRelation.self, \UserCompanyRelation.$userCompanyRoles)
+//            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
+//            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
+//            .all()
         return try await req.auth.require(User.self).$companies.get(on: req.db)
     }
     
