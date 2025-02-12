@@ -103,13 +103,9 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
         try container.encode(owner, forKey: .owner)
-//        try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
+        try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
     }
     
-//    public func setUserCompanyRoles(_ roles: [UserCompanyRole]) {
-//        self.currentUserCompanyRoles = roles
-//    }
-//    
     @Sendable
     public static func getCompanies(req: Request) async throws -> [Company] {
         let user = try req.auth.require(User.self)
@@ -124,7 +120,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    static func getCompany(req: Request) async throws -> Company {
+    public static func getCompany(req: Request) async throws -> Company {
         guard let user = try? req.auth.require(User.self),
               let companyId = req.parameters.get("companyID"),
               let companyUUID = UUID(uuidString: companyId) else {
@@ -142,7 +138,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    static func update(req: Request) async throws -> Company {
+    public static func update(req: Request) async throws -> Company {
         try Company.Update.validate(content: req)
         let user: User = try req.auth.require(User.self)
         let update = try req.content.decode(Company.Update.self)
@@ -175,7 +171,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    static func create(req: Request) async throws -> Company {
+    public static func create(req: Request) async throws -> Company {
         req.logger.info("Create company begin...")
         
         // Auth user and get new company data
@@ -266,7 +262,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    func delete(req: Request) async throws -> HTTPStatus {
+    public func delete(req: Request) async throws -> HTTPStatus {
         let user = try req.auth.require(User.self)
         guard let companyIDString = req.parameters.get("companyID"),
               let companyID = UUID(uuidString: companyIDString),
