@@ -47,7 +47,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     public var local: Bool = false
     
 //    @FieldProperty<UserCompanyRelation, [UserCompanyRole]>(key: "current_user_company_roles")
-//    public var currentUserCompanyRoles: [UserCompanyRole]
+    public var currentUserCompanyRoles: [UserCompanyRole]?
 
     public init() { }
 
@@ -111,14 +111,18 @@ public final class Company: Model, Content, @unchecked Sendable {
 //    
     @Sendable
     public static func getCompanies(req: Request) async throws -> [Company] {
-//        let user = try req.auth.require(User.self)
-//        let companies = try await Company.query(on: req.db)
+        let user = try req.auth.require(User.self)
+        let companies = try await Company.query(on: req.db)
 //            .fields(for: Company.self)
 //            .field(UserCompanyRelation.self, \UserCompanyRelation.$userCompanyRoles)
-//            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
-//            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
-//            .all()
-        return try await req.auth.require(User.self).$companies.get(on: req.db)
+            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
+            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
+            .all()
+        for c in companies {
+            c.currentUserCompanyRoles = try c.joined(UserCompanyRelation.self).userCompanyRoles
+        }
+        return companies
+//        return try await req.auth.require(User.self).$companies.get(on: req.db)
     }
     
 //    public func attachLocalCompany(user: User, on db: Database) async throws {
