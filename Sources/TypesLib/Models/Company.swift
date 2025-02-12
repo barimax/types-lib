@@ -6,6 +6,7 @@
 //
 import Vapor
 import Fluent
+import FluentSQL
 
 public final class Company: Model, Content, @unchecked Sendable {
 
@@ -113,8 +114,6 @@ public final class Company: Model, Content, @unchecked Sendable {
     public static func getCompanies(req: Request) async throws -> [Company] {
         let user = try req.auth.require(User.self)
         let companies = try await Company.query(on: req.db)
-//            .fields(for: Company.self)
-//            .field(UserCompanyRelation.self, \UserCompanyRelation.$userCompanyRoles)
             .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
             .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
             .all()
@@ -122,31 +121,193 @@ public final class Company: Model, Content, @unchecked Sendable {
             c.currentUserCompanyRoles = try c.joined(UserCompanyRelation.self).userCompanyRoles
         }
         return companies
-//        return try await req.auth.require(User.self).$companies.get(on: req.db)
     }
     
-//    public func attachLocalCompany(user: User, on db: Database) async throws {
-//        let relation = UserCompanyRelation(user: user, company: self)
-//        try await relation.create(on: db)
-//    }
-//    
-//    public func detachLocalCompany(user: User, on db: Database) async throws {
-//        let relation = UserCompanyRelation(user: user, company: self)
-//        try await relation.delete(force: true, on: db)
-//    }
+    @Sendable
+    static func getCompany(req: Request) async throws -> Company {
+        guard let user = try? req.auth.require(User.self),
+              let companyId = req.parameters.get("companyID"),
+              let companyUUID = UUID(uuidString: companyId) else {
+            throw Abort(.notFound)
+        }
+        guard let company = try await Company.query(on: req.db)
+            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
+            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
+            .filter(\Company.$id != companyUUID)
+            .first() else{
+            throw Abort(.notFound)
+        }
+        company.currentUserCompanyRoles = try company.joined(UserCompanyRelation.self).userCompanyRoles
+        return company
+    }
+    
+    @Sendable
+    static func update(req: Request) async throws -> Company {
+        try Company.Update.validate(content: req)
+        let user: User = try req.auth.require(User.self)
+        let update = try req.content.decode(Company.Update.self)
+        let companyConfiguration = CompanyConfiguration(
+            clientsAccount: update.clientsAccount,
+            suppliersAccount: update.suppliersAccount,
+            bankCostsAccount: update.bankCostsAccount,
+            cashAccount: update.cashAccount,
+            register: update.register,
+            bankAccounts: update.bankAccounts
+        )
+        guard let userUUID = try? user.requireID() else {
+            throw Abort(.internalServerError)
+        }
+        let optionalCompany = try await Company.query(on: req.db)
+            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
+            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id, .equal, userUUID)
+            .filter(\Company.$id == update.id)
+            .first()
+        guard let company = optionalCompany else {
+            throw Abort(.notFound, reason: "No company found.")
+        }
+        company.name = update.name
+        company.uid = update.uid
+        company.address = update.address
+        company.configuration = companyConfiguration
+        company.local = company.owner == userUUID
+        try await company.update(on: req.db)
+        return company
+    }
+    
+    @Sendable
+    static func create(req: Request) async throws -> Company {
+        req.logger.info("Create company begin...")
+        
+        // Auth user and get new company data
+        let user = try req.auth.require(User.self)
+        guard let userID = user.id else {
+            throw Abort(.unauthorized)
+        }
+        let createCompany = try req.content.decode(Company.Create.self)
+        req.logger.debug(.init(stringLiteral: String(describing: createCompany)))
+        // Check if company exists for current user
+        guard try await Company.query(on: req.db)
+            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
+            .filter(\Company.$uid, .equal, createCompany.uid)
+            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
+            .first() == nil else {
+            throw Abort(.forbidden, reason: "Фирмата съществува")
+        }
+        // Create new database name
+        let dbName: String = String(abs((createCompany.uid+userID.uuidString).hash), radix: 16, uppercase: false)
+        guard let sql = req.db as? SQLDatabase else {
+            throw Abort(.internalServerError, reason: "NoSQLDatabase.")
+        }
+        req.logger.debug(.init(stringLiteral: "Creating database \(dbName)..."))
+        do {
+            try await sql.raw("CREATE DATABASE \(unsafeRaw: dbName)").run()
+        } catch {
+            req.logger.error(.init(stringLiteral: String(describing: error)))
+            throw error
+        }
+        req.logger.debug(.init(stringLiteral: "Database \(dbName) created."))
+        let companyConfiguration = CompanyConfiguration(
+            clientsAccount: createCompany.clientsAccount,
+            suppliersAccount: createCompany.suppliersAccount,
+            bankCostsAccount: createCompany.bankCostsAccount,
+            cashAccount: createCompany.cashAccount,
+            register: createCompany.register,
+            bankAccounts: createCompany.bankAccounts
+        )
+        let company = Company(
+            name: createCompany.name,
+            uid: createCompany.uid,
+            address: createCompany.address,
+            database: dbName,
+            configuration: companyConfiguration,
+            owner: try user.requireID()
+        )
+        company.local = true
+//        company.currentUserCompanyRoles = UserCompanyRole.owner
+        req.logger.debug(.init(stringLiteral: "Saving \(company.name) to database..."))
+        do {
+            try await req.db.transaction { db async throws in
+                try await company.create(on: db)
+                try await company.$users.attach(user, on: db) { relation in
+                    relation.userCompanyRoles = UserCompanyRole.owner
+                }
+            }
+        } catch {
+            req.logger.error(.init(stringLiteral: String(describing: error)))
+            req.logger.debug(.init(stringLiteral: "Delete database \(dbName)..."))
+            guard (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
+                req.logger.error(.init(stringLiteral: String(describing: error)))
+                throw Abort(.internalServerError, reason: "Reverting database creation failed.")
+            }
+            throw error
+        }
+        req.logger.debug(.init(stringLiteral: "Database \(company.name) saved."))
+        // Check database receiver instance IP and try attach database
+        do {
+            guard let proxyHost = req.headers.first(name: "X-proxy-host") else {
+                throw Abort(.internalServerError, reason: "X-proxy-host header not found.")
+            }
+            guard try await req.client.post("http://\(proxyHost)/spi/setNewDatabase/\(dbName)").status == .ok else {
+                throw Abort(.internalServerError, reason: "setNewDatabase failed.")
+            }
+        }catch {
+            req.logger.error(.init(stringLiteral: String(describing: error)))
+            req.logger.debug(.init(stringLiteral: "Reverting..."))
+            guard (try? await company.delete(on: req.db)) != nil,
+                  (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
+                req.logger.error(.init(stringLiteral: String(describing: error)))
+                throw Abort(.internalServerError, reason: "Reverting company creation failed.")
+            }
+            req.logger.debug(.init(stringLiteral: "Reverting company creation completed successfully."))
+            throw error
+        }
+        req.logger.info(.init(stringLiteral: "Company created successfully."))
+        return company
+    }
+    
+    @Sendable
+    func delete(req: Request) async throws -> HTTPStatus {
+        let user = try req.auth.require(User.self)
+        guard let companyIDString = req.parameters.get("companyID"),
+              let companyID = UUID(uuidString: companyIDString),
+              let company = try await Company.find(companyID, on: req.db),
+              let dbName = company.database else {
+            throw Abort(.badRequest)
+        }
+        try await req.db.transaction { db async throws in
+            try await company.$users.detach(user, on: db)
+            try await company.delete(on: req.db)
+        }
+        
+        do {
+            guard let sql = req.db as? SQLDatabase else {
+                throw Abort(.internalServerError, reason: "NoSQLDatabase.")
+            }
+            req.logger.debug(.init(stringLiteral: "Deleting database \(dbName)..."))
+            do {
+                try await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()
+            } catch {
+                req.logger.error(.init(stringLiteral: String(describing: error)))
+                throw error
+            }
+        }catch{
+            try await req.db.transaction { db async throws in
+                try await company.restore(on: req.db)
+                try await company.$users.attach(user, on: db)
+            }
+            
+            req.logger.error(.init(stringLiteral: String(describing: error)))
+            throw error
+        }
+        try await company.delete(force: true, on: req.db)
+        return .ok
+    }
     
     public func changeOwner(to user: User, on db: Database) async throws {
         self.owner = try user.requireID()
         try await self.save(on: db)
     }
     
-//    func delete(force: Bool = false, on database: any Database) async throws {
-//        try await database.transaction { db in
-//            try await UserCompanyRelation.query(on: db).filter(\UserCompanyRelation.$company.$id, .equal, self.requireID()).delete(force: true)
-//            try await self.delete(force: force, on: db).get()
-//        }
-//        
-//    }
 }
 
 extension Company.Create: Validatable {
