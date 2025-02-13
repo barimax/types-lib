@@ -88,7 +88,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles
+        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles, database
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -103,6 +103,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(configuration, forKey: .configuration)
         try container.encode(local, forKey: .local)
         try container.encode(owner, forKey: .owner)
+        try container.encode(database, forKey: .database)
         try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
     }
     
@@ -115,6 +116,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             .all()
         for c in companies {
             c.currentUserCompanyRoles = try c.joined(UserCompanyRelation.self).userCompanyRoles
+            c.local = c.owner == user.id
         }
         return companies
     }
@@ -126,14 +128,11 @@ public final class Company: Model, Content, @unchecked Sendable {
               let companyUUID = UUID(uuidString: companyId) else {
             throw Abort(.notFound)
         }
-        guard let company = try await Company.query(on: req.db)
-            .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
-            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
-            .filter(\Company.$id != companyUUID)
-            .first() else{
+        guard var company = try await Company.find(companyUUID, on: req.db) else {
             throw Abort(.notFound)
         }
         company.currentUserCompanyRoles = try company.joined(UserCompanyRelation.self).userCompanyRoles
+        company.local = company.owner == user.id
         return company
     }
     
