@@ -85,4 +85,7 @@ public extension Request {
     var companyDatabaseID: String? {
         self.headers.first(name: "X-company-database")
     }
+    var companyID: String? {
+        self.headers.first(name: "X-company-id")
+    }
 }
