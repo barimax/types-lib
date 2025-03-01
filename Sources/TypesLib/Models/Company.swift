@@ -248,7 +248,9 @@ public final class Company: Model, Content, @unchecked Sendable {
         }catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             req.logger.debug(.init(stringLiteral: "Reverting..."))
-            guard (try? await company.delete(on: req.db)) != nil,
+            
+            guard (try? await company.$users.detach(user, on: req.db)) != nil,
+                  (try? await company.delete(force: true, on: req.db)) != nil,
                   (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw Abort(.internalServerError, reason: "Reverting company creation failed.")
