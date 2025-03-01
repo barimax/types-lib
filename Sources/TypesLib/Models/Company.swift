@@ -184,7 +184,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         guard try await Company.query(on: req.db)
             .join(UserCompanyRelation.self, on: \UserCompanyRelation.$company.$id == \Company.$id)
             .filter(\Company.$uid, .equal, createCompany.uid)
-            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
+//            .filter(UserCompanyRelation.self, \UserCompanyRelation.$user.$id == user.requireID())
             .first() == nil else {
             throw Abort(.forbidden, reason: "Фирмата съществува")
         }
