@@ -128,7 +128,7 @@ public final class Company: Model, Content, @unchecked Sendable {
               let companyUUID = UUID(uuidString: companyId) else {
             throw Abort(.notFound)
         }
-        guard var company = try await Company.find(companyUUID, on: req.db) else {
+        guard let company = try await Company.find(companyUUID, on: req.db) else {
             throw Abort(.notFound)
         }
         company.currentUserCompanyRoles = try company.joined(UserCompanyRelation.self).userCompanyRoles
@@ -147,7 +147,25 @@ public final class Company: Model, Content, @unchecked Sendable {
             bankCostsAccount: update.bankCostsAccount,
             cashAccount: update.cashAccount,
             register: update.register,
-            bankAccounts: update.bankAccounts
+            bankAccounts: update.bankAccounts.map { bankAccount in
+                .init(
+                    bic: bankAccount.bic,
+                    name: bankAccount.name,
+                    iban: bankAccount.iban,
+                    currency: bankAccount.currency,
+                    bankAccount: bankAccount.bankAccount,
+                    clientsAccount: bankAccount.clientsAccount ?? update.clientsAccount,
+                    suppliersAccount: bankAccount.suppliersAccount ?? update.suppliersAccount,
+                    bankCostsAccount: bankAccount.bankCostsAccount ?? update.bankCostsAccount,
+                    bankCostsSearch: bankAccount.bankCostsSearch,
+                    cashAccount: bankAccount.cashAccount ?? update.cashAccount,
+                    cashSearch: bankAccount.cashSearch,
+                    register: bankAccount.register ?? update.register,
+                    accountCriteria: bankAccount.accountCriteria,
+                    accountDetails: bankAccount.accountDetails
+                )
+                
+            }
         )
         guard let userUUID = try? user.requireID() else {
             throw Abort(.internalServerError)
@@ -207,7 +225,25 @@ public final class Company: Model, Content, @unchecked Sendable {
             bankCostsAccount: createCompany.bankCostsAccount,
             cashAccount: createCompany.cashAccount,
             register: createCompany.register,
-            bankAccounts: createCompany.bankAccounts
+            bankAccounts: createCompany.bankAccounts.map { bankAccount in
+                    .init(
+                        bic: bankAccount.bic,
+                        name: bankAccount.name,
+                        iban: bankAccount.iban,
+                        currency: bankAccount.currency,
+                        bankAccount: bankAccount.bankAccount,
+                        clientsAccount: bankAccount.clientsAccount ?? createCompany.clientsAccount,
+                        suppliersAccount: bankAccount.suppliersAccount ?? createCompany.suppliersAccount,
+                        bankCostsAccount: bankAccount.bankCostsAccount ?? createCompany.bankCostsAccount,
+                        bankCostsSearch: bankAccount.bankCostsSearch,
+                        cashAccount: bankAccount.cashAccount ?? createCompany.cashAccount,
+                        cashSearch: bankAccount.cashSearch,
+                        register: bankAccount.register ?? createCompany.register,
+                        accountCriteria: bankAccount.accountCriteria,
+                        accountDetails: bankAccount.accountDetails
+                    )
+                    
+                }
         )
         let company = Company(
             name: createCompany.name,
