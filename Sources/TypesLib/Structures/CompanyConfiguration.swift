@@ -6,12 +6,12 @@
 //
 
 public struct CompanyConfiguration: Codable {
-    var clientsAccount: Int?
-    var suppliersAccount: Int?
-    var bankCostsAccount: Int?
-    var cashAccount: Int?
-    var register: Int?
-    var bankAccounts: [BankAccount]?
+    public var clientsAccount: Int?
+    public var suppliersAccount: Int?
+    public var bankCostsAccount: Int?
+    public var cashAccount: Int?
+    public var register: Int?
+    public var bankAccounts: [BankAccount]?
     
     public init(clientsAccount: Int? = nil, suppliersAccount: Int? = nil, bankCostsAccount: Int? = nil, cashAccount: Int? = nil, register: Int? = nil, bankAccounts: [BankAccount]? = nil) {
         self.clientsAccount = clientsAccount
