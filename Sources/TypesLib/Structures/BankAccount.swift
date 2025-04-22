@@ -15,6 +15,7 @@ public class BankAccount: PartnerBankAccountProtocol {
     public let iban: String
     public let currency: Currency
     public let bankAccount: Int
+    public let taxAccount: Int?
     public let clientsAccount: Int?
     public let suppliersAccount: Int?
     public let bankCostsAccount: Int?
@@ -25,12 +26,13 @@ public class BankAccount: PartnerBankAccountProtocol {
     public let accountCriteria: [BankAccount.AccountCriteria]?
     public let accountDetails: BankAccount.AccountDetails?
     
-    public init(bic: String?, name: String, iban: String, currency: Currency, bankAccount: Int, clientsAccount: Int?, suppliersAccount: Int?, bankCostsAccount: Int?, bankCostsSearch: String?, cashAccount: Int?, cashSearch: String?, register: Int?, accountCriteria: [BankAccount.AccountCriteria]?, accountDetails: BankAccount.AccountDetails?) {
+    public init(bic: String?, name: String, iban: String, currency: Currency, bankAccount: Int, taxAccount: Int?, clientsAccount: Int?, suppliersAccount: Int?, bankCostsAccount: Int?, bankCostsSearch: String?, cashAccount: Int?, cashSearch: String?, register: Int?, accountCriteria: [BankAccount.AccountCriteria]?, accountDetails: BankAccount.AccountDetails?) {
         self.bic = bic
         self.name = name
         self.iban = iban
         self.currency = currency
         self.bankAccount = bankAccount
+        self.taxAccount = taxAccount
         self.clientsAccount = clientsAccount
         self.suppliersAccount = suppliersAccount
         self.bankCostsAccount = bankCostsAccount
