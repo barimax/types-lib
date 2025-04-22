@@ -70,6 +70,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
+        public let taxAccount: Int?
         public let register: Int?
         public let bankAccounts: [BankAccount]
     }
@@ -83,6 +84,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let suppliersAccount: Int?
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
+        public let taxAccount: Int?
         public let register: Int?
         public let bankAccounts: [BankAccount]
     }
@@ -146,6 +148,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             suppliersAccount: update.suppliersAccount,
             bankCostsAccount: update.bankCostsAccount,
             cashAccount: update.cashAccount,
+            taxAccount: update.taxAccount,
             register: update.register,
             bankAccounts: update.bankAccounts.map { bankAccount in
                 .init(
@@ -154,6 +157,7 @@ public final class Company: Model, Content, @unchecked Sendable {
                     iban: bankAccount.iban,
                     currency: bankAccount.currency,
                     bankAccount: bankAccount.bankAccount,
+                    taxAccount: bankAccount.taxAccount,
                     clientsAccount: bankAccount.clientsAccount ?? update.clientsAccount,
                     suppliersAccount: bankAccount.suppliersAccount ?? update.suppliersAccount,
                     bankCostsAccount: bankAccount.bankCostsAccount ?? update.bankCostsAccount,
@@ -224,6 +228,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             suppliersAccount: createCompany.suppliersAccount,
             bankCostsAccount: createCompany.bankCostsAccount,
             cashAccount: createCompany.cashAccount,
+            taxAccount: createCompany.taxAccount,
             register: createCompany.register,
             bankAccounts: createCompany.bankAccounts.map { bankAccount in
                     .init(
@@ -232,6 +237,7 @@ public final class Company: Model, Content, @unchecked Sendable {
                         iban: bankAccount.iban,
                         currency: bankAccount.currency,
                         bankAccount: bankAccount.bankAccount,
+                        taxAccount: bankAccount.taxAccount,
                         clientsAccount: bankAccount.clientsAccount ?? createCompany.clientsAccount,
                         suppliersAccount: bankAccount.suppliersAccount ?? createCompany.suppliersAccount,
                         bankCostsAccount: bankAccount.bankCostsAccount ?? createCompany.bankCostsAccount,
