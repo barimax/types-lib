@@ -11,10 +11,10 @@ public struct CompanyConfiguration: Codable {
     public var bankCostsAccount: Int?
     public var cashAccount: Int?
     public var taxAccount: Int?
-    public var register: Int?
+    public var register: String?
     public var bankAccounts: [BankAccount]?
     
-    public init(clientsAccount: Int? = nil, suppliersAccount: Int? = nil, bankCostsAccount: Int? = nil, cashAccount: Int? = nil, taxAccount: Int? = nil, register: Int? = nil, bankAccounts: [BankAccount]? = nil) {
+    public init(clientsAccount: Int? = nil, suppliersAccount: Int? = nil, bankCostsAccount: Int? = nil, cashAccount: Int? = nil, taxAccount: Int? = nil, register: String? = nil, bankAccounts: [BankAccount]? = nil) {
         self.clientsAccount = clientsAccount
         self.suppliersAccount = suppliersAccount
         self.bankCostsAccount = bankCostsAccount

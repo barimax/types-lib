@@ -71,7 +71,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
         public let taxAccount: Int?
-        public let register: Int?
+        public let register: String?
         public let bankAccounts: [BankAccount]
     }
     
@@ -85,7 +85,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let bankCostsAccount: Int?
         public let cashAccount: Int?
         public let taxAccount: Int?
-        public let register: Int?
+        public let register: String?
         public let bankAccounts: [BankAccount]
     }
     
