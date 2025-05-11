@@ -22,11 +22,13 @@ public class BankAccount: PartnerBankAccountProtocol {
     public let bankCostsSearch: String?
     public let cashAccount: Int?
     public let cashSearch: String?
+    public let refundAccount: Int?
+    public let refundSearch: String?
     public let register: String?
     public let accountCriteria: [BankAccount.AccountCriteria]?
     public let accountDetails: BankAccount.AccountDetails?
     
-    public init(bic: String?, name: String, iban: String, currency: Currency, bankAccount: Int, taxAccount: Int?, clientsAccount: Int?, suppliersAccount: Int?, bankCostsAccount: Int?, bankCostsSearch: String?, cashAccount: Int?, cashSearch: String?, register: String?, accountCriteria: [BankAccount.AccountCriteria]?, accountDetails: BankAccount.AccountDetails?) {
+    public init(bic: String?, name: String, iban: String, currency: Currency, bankAccount: Int, taxAccount: Int?, clientsAccount: Int?, suppliersAccount: Int?, bankCostsAccount: Int?, bankCostsSearch: String?, cashAccount: Int?, cashSearch: String?, refundAccount: Int?, refundSearch: String?, register: String?, accountCriteria: [BankAccount.AccountCriteria]?, accountDetails: BankAccount.AccountDetails?) {
         self.bic = bic
         self.name = name
         self.iban = iban
@@ -39,6 +41,8 @@ public class BankAccount: PartnerBankAccountProtocol {
         self.bankCostsSearch = bankCostsSearch
         self.cashAccount = cashAccount
         self.cashSearch = cashSearch
+        self.refundAccount = refundAccount
+        self.refundSearch = refundSearch
         self.register = register
         self.accountCriteria = accountCriteria
         self.accountDetails = accountDetails
