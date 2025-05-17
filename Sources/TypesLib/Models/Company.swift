@@ -222,7 +222,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         req.logger.debug(.init(stringLiteral: "Creating database \(dbName)..."))
         do {
-            try await sql.raw("CREATE DATABASE \(unsafeRaw: dbName)").run()
+            try await sql.raw("CREATE DATABASE \"\(unsafeRaw: dbName)\"").run()
         } catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             throw error
