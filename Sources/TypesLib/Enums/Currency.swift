@@ -37,7 +37,21 @@ public enum CurrencyCode: String, Codable, CaseIterable {
     case YER
     case ZAR, ZMW, ZWL
     case ZZZ
-    
+    // Encode to lowercase string
+    public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(rawValue.uppercased())
+        }
+
+        // Decode from lowercase string
+    public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let value = try container.decode(String.self).uppercased()
+            guard let code = CurrencyCode(rawValue: value) else {
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid currency code: \(value)")
+            }
+            self = code
+        }
     public func getName() -> String? {
         return self.rawValue
     }
