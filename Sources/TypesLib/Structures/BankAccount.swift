@@ -80,9 +80,11 @@ public class BankAccount: PartnerBankAccountProtocol {
 //    }
     
     public struct AccountCriteria: Codable, Sendable {
-        let account:  Int
-        let search: String?
-        let isPartner: Bool
+        let direction:  Direction
+        let searchPhrase: String
+        let kind: PaymentKind
+        let account: Int
+        let partner: IDContainer?
     }
 
     public struct AccountDetails: Codable, Sendable {
