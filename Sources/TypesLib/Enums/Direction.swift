@@ -7,8 +7,8 @@
 
 import Fluent
 
-enum Direction: String, Codable {
-    func getName() -> String? {
+public enum Direction: String, Codable {
+    public func getName() -> String? {
         switch(self){
         case .inbound:
             return "Входящ"
@@ -17,14 +17,14 @@ enum Direction: String, Codable {
         }
     }
     
-    static func prepareEnumMigration(database: any FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
+    public static func prepareEnumMigration(database: any FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         try await database.enum(Direction.registerName)
             .case("inbound")
             .case("outbound")
             .create()
     }
     
-    static var registerName: String = "invoiceDirection"
+    public static var registerName: String = "invoiceDirection"
     
     case inbound
     case outbound

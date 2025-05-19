@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum PaymentKind: String, CaseIterable, Codable {
+public enum PaymentKind: String, CaseIterable, Codable {
     case none = "none"
     case fromClient = "from_client"
     case toSupplier = "to_supplier"
@@ -21,7 +21,7 @@ enum PaymentKind: String, CaseIterable, Codable {
     case atmOutbound = "outbound_on_atm"
     case fintechPayment = "fintech_payment"
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case none = "none"
         case fromClient = "from_client"
         case toSupplier = "to_supplier"
@@ -37,11 +37,11 @@ enum PaymentKind: String, CaseIterable, Codable {
         case fintechPayment = "fintech_payment"
     }
     
-    static var rawValues: [String] {
+    public static var rawValues: [String] {
         PaymentKind.allCases.map { $0.rawValue }
     }
     
-    static var rawValuesEncoded: String? {
+    public static var rawValuesEncoded: String? {
         try? String(data:JSONEncoder().encode(PaymentKind.rawValues), encoding: .utf8)
     }
 }
