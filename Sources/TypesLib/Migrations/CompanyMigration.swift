@@ -32,4 +32,21 @@ extension Company {
             try await database.schema(Company.schema).delete()
         }
     }
+    
+    struct AddSoftwareType: AsyncMigration {
+        var name: String { "Company.AddSoftwareTypeMigration" }
+        
+        func prepare(on database: Database) async throws {
+            try await database.schema(Company.schema)
+                .id()
+                .field("software_type", .string)
+                .update()
+        }
+
+        func revert(on database: Database) async throws {
+            try await database.schema(Company.schema)
+                .deleteField("software_type")
+                .update()
+        }
+    }
 }
