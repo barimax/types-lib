@@ -7,7 +7,7 @@
 
 import Fluent
 
-public enum Direction: String, Codable {
+public enum Direction: String, Codable, Sendable {
     public func getName() -> String? {
         switch(self){
         case .inbound:

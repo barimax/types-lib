@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public enum PaymentKind: String, CaseIterable, Codable {
+public enum PaymentKind: String, CaseIterable, Codable, Sendable {
     case none = "none"
     case fromClient = "from_client"
     case toSupplier = "to_supplier"

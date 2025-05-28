@@ -8,6 +8,12 @@ import Vapor
 import Fluent
 import FluentSQL
 
+public enum SoftwareType: String, Codable {
+    case crm
+    case shame
+    case autoRepair
+}
+
 public final class Company: Model, Content, @unchecked Sendable {
 
     public static let schema: String = "companies"
@@ -39,6 +45,9 @@ public final class Company: Model, Content, @unchecked Sendable {
     @OptionalField(key: "configuration")
     public var configuration: CompanyConfiguration?
     
+    @OptionalField(key: "software_type")
+    public var softwareType: SoftwareType?
+    
     @Field(key: "owner")
     public var owner: UUID
     
@@ -52,7 +61,7 @@ public final class Company: Model, Content, @unchecked Sendable {
 
     public init() { }
 
-    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration, owner o: UUID) {
+    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration, owner o: UUID, softwareType: SoftwareType?) {
         self.id = id
         self.name = name
         self.uid = uid
@@ -60,6 +69,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         self.database = db
         self.configuration = c
         self.owner = o
+        self.softwareType = softwareType
     }
     
     public struct Create: Content {
@@ -74,6 +84,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let refundAccount: Int?
         public let register: String?
         public let bankAccounts: [BankAccount]
+        public let softwareType: SoftwareType?
     }
     
     public struct Update: Content {
@@ -89,10 +100,11 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let refundAccount: Int?
         public let register: String?
         public let bankAccounts: [BankAccount]
+        public let softwareType: SoftwareType?
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles, database
+        case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles, database, softwareType
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -109,6 +121,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         try container.encode(owner, forKey: .owner)
         try container.encode(database, forKey: .database)
         try container.encode(currentUserCompanyRoles, forKey: .currentUserCompanyRoles)
+        try container.encode(softwareType, forKey: .softwareType)
     }
     
     @Sendable
@@ -192,6 +205,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         company.address = update.address
         company.configuration = companyConfiguration
         company.local = company.owner == userUUID
+        company.softwareType = update.softwareType
         try await company.update(on: req.db)
         return company
     }
@@ -265,7 +279,8 @@ public final class Company: Model, Content, @unchecked Sendable {
             address: createCompany.address,
             database: dbName,
             configuration: companyConfiguration,
-            owner: try user.requireID()
+            owner: try user.requireID(),
+            softwareType: createCompany.softwareType
         )
         company.local = true
 //        company.currentUserCompanyRoles = UserCompanyRole.owner
