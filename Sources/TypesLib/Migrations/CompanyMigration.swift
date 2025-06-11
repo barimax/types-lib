@@ -38,7 +38,6 @@ extension Company {
         
         func prepare(on database: Database) async throws {
             try await database.schema(Company.schema)
-                .id()
                 .field("software_type", .string)
                 .update()
         }
