@@ -307,7 +307,8 @@ public final class Company: Model, Content, @unchecked Sendable {
             guard let proxyHost = req.headers.first(name: "X-proxy-host") else {
                 throw Abort(.internalServerError, reason: "X-proxy-host header not found.")
             }
-            guard try await req.client.post("http://\(proxyHost)/spi/setNewDatabase/\(dbName)").status == .ok else {
+            let setNewDatabaseResponse = try await req.client.post("http://\(proxyHost)/spi/setNewDatabase/\(dbName)")
+            guard setNewDatabaseResponse.status == .ok else {
                 throw Abort(.internalServerError, reason: "setNewDatabase failed.")
             }
         }catch {
