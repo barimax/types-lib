@@ -329,7 +329,7 @@ public final class Company: Model, Content, @unchecked Sendable {
     }
     
     @Sendable
-    public func delete(req: Request) async throws -> HTTPStatus {
+    public static func delete(req: Request) async throws -> HTTPStatus {
         let user = try req.auth.require(User.self)
         guard let companyIDString = req.parameters.get("companyID"),
               let companyID = UUID(uuidString: companyIDString),
