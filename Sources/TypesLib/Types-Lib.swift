@@ -70,6 +70,7 @@ public final class TypesLib {
             mysqlConfig.database = database
             mysqlConfig.tlsConfiguration = tls
             app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
+            req.logger.info("[JORO] Database migration count \(migrations.count)")
             app.migrations.add(migrations, to: databaseID)
             try await app.autoMigrate()
             
