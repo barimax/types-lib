@@ -339,7 +339,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         try await req.db.transaction { db async throws in
             try await company.$users.detach(user, on: db)
-            try await company.delete(on: req.db)
+            try await company.delete(on: db)
         }
         
         do {
@@ -355,7 +355,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             }
         }catch{
             try await req.db.transaction { db async throws in
-                try await company.restore(on: req.db)
+                try await company.restore(on: db)
                 try await company.$users.attach(user, on: db)
             }
             
