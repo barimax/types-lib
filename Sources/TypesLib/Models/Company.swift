@@ -45,8 +45,8 @@ public final class Company: Model, Content, @unchecked Sendable {
     @OptionalField(key: "configuration")
     public var configuration: CompanyConfiguration?
     
-    @OptionalField(key: "software_type")
-    public var softwareType: SoftwareType?
+    @Field(key: "software_type")
+    public var softwareType: SoftwareType
     
     @Field(key: "owner")
     public var owner: UUID
