@@ -61,7 +61,7 @@ public final class Company: Model, Content, @unchecked Sendable {
 
     public init() { }
 
-    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration, owner o: UUID, softwareType: SoftwareType?) {
+    public init(id: UUID? = nil, name: String, uid: String, address: String, database db: String?, configuration c: CompanyConfiguration, owner o: UUID, softwareType: SoftwareType) {
         self.id = id
         self.name = name
         self.uid = uid
@@ -84,7 +84,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let refundAccount: Int?
         public let register: String?
         public let bankAccounts: [BankAccount]
-        public let softwareType: SoftwareType?
+        public let softwareType: SoftwareType
     }
     
     public struct Update: Content {
@@ -100,7 +100,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         public let refundAccount: Int?
         public let register: String?
         public let bankAccounts: [BankAccount]
-        public let softwareType: SoftwareType?
+        public let softwareType: SoftwareType
     }
     
     enum CodingKeys: String, CodingKey {
