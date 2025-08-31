@@ -61,6 +61,7 @@ public final class TypesLib {
     public static func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [AsyncMigration]) throws {
         app.post("spi", "setNewDatabase", ":databaseID") { req async throws  -> HTTPStatus in
             guard let database = req.parameters.get("databaseID") else {
+                req.logger.error("Missing databaseID")
                 throw Abort(.badRequest, reason: "Missing databaseID")
             }
             let databaseID = DatabaseID(string: database)
@@ -69,6 +70,7 @@ public final class TypesLib {
             var mysqlConfig = configuration
             mysqlConfig.database = database
             mysqlConfig.tlsConfiguration = tls
+            req.logger.info("[JORO] New database configuration done.")
             app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
             req.logger.info("[JORO] Database migration count \(migrations.count)")
             app.migrations.add(migrations, to: databaseID)
