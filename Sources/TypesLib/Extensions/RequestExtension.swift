@@ -88,4 +88,12 @@ public extension Request {
     var companyID: String? {
         self.headers.first(name: "X-company-id")
     }
+    
+    var businessType: BusinessType? {
+        guard let businessTypeString = self.headers.first(name: "X-business-type"),
+              let businessType = BusinessType(rawValue: businessTypeString) else {
+            return nil
+        }
+        return businessType
+    }
 }
