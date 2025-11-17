@@ -96,5 +96,4 @@ public extension Request {
         }
         return businessType
     }
-    
 }
