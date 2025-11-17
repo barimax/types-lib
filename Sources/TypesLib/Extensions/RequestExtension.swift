@@ -89,6 +89,7 @@ public extension Request {
         self.headers.first(name: "X-company-id")
     }
     
+    // BusinessType is important to load in menu models needed
     var businessType: BusinessType? {
         guard let businessTypeString = self.headers.first(name: "X-business-type"),
               let businessType = BusinessType(rawValue: businessTypeString) else {
