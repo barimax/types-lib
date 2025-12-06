@@ -7,30 +7,10 @@
 
 import Vapor
 
-//public struct AuthResponse: Content, Codable {
-//    
-//    public let token: String?
-//    public let companies: [Company]
-//    public let user: User
-//    
-//   public init(
-//        token: String?,
-//        companies: [Company],
-//        user: User
-//    ) {
-//        self.token = token
-//        self.companies = companies
-//        self.user = user
-//    }
-//}
-//
-//public struct UserResponse: Content, Codable {
-//
-//   public let user: User
-//    
-//   public init(
-//        user: User
-//    ) {
-//        self.user = user
-//    }
-//}
+public struct LoginResponse: Content {
+    public let isOTP: Bool
+}
+
+public struct OTPSecret: Content {
+    public let secret: String
+}
