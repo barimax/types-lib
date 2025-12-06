@@ -9,7 +9,7 @@
 @preconcurrency import Vapor
 
 @preconcurrency
-public final class Token: Model, Content {
+public final class Token: Model, Content, @unchecked Sendable {
     public static let schema = "tokens"
 
     @ID(key: .id)
@@ -32,10 +32,8 @@ public final class Token: Model, Content {
 
 
 extension Token: ModelTokenAuthenticatable {
-    
-    
-    public static let valueKey = \Token.$value
-    public static let userKey = \Token.$user
+    public static var valueKey: KeyPath<Token, Field<String>> { \.$value }
+    public static var userKey: KeyPath<Token, Parent<User>> { \.$user }
 
     public var isValid: Bool {
         true

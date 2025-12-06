@@ -6,7 +6,7 @@
 //
 import Fluent
 
-public enum CurrencyCode: String, Codable, CaseIterable {
+public enum CurrencyCode: String, Codable, CaseIterable, Sendable {
     
     public static let registerName: String = "currency_code"
     

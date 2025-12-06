@@ -5,7 +5,7 @@
 //  Created by Georgie Ivanov on 18.11.24.
 //
 
-public struct CompanyConfiguration: Codable {
+public struct CompanyConfiguration: Codable, Sendable {
     public var clientsAccount: Int?
     public var suppliersAccount: Int?
     public var bankCostsAccount: Int?

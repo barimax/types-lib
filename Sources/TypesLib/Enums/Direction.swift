@@ -24,7 +24,7 @@ public enum Direction: String, Codable, Sendable {
             .create()
     }
     
-    public static var registerName: String = "invoiceDirection"
+    public static let registerName: String = "invoiceDirection"
     
     case inbound
     case outbound

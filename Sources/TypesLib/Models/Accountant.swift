@@ -8,11 +8,11 @@
 import Vapor
 import Fluent
 
-public final class Accountant: Model, Content {
+public final class Accountant: Model, Content, @unchecked Sendable {
     
     public static let schema: String = "accountants"
-    public static var optionField: AnyKeyPath = \Accountant.name
-    public static var registerName: String = "accountant"
+    nonisolated(unsafe) public static let optionField: AnyKeyPath = \Accountant.name
+    public static let registerName: String = "accountant"
  
     
     @ID()

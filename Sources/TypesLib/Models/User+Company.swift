@@ -9,7 +9,7 @@ import Vapor
 import Fluent
 
 
-public enum UserCompanyRole: String, Codable {
+public enum UserCompanyRole: String, Codable, Sendable {
     case canDelete
     case canEdit
     case canShare
@@ -18,7 +18,7 @@ public enum UserCompanyRole: String, Codable {
     public static let sharedWith: [UserCompanyRole] = [.canShare]
 }
 
-public final class UserCompanyRelation: Model {
+public final class UserCompanyRelation: Model, @unchecked Sendable {
     
     public static let schema: String = "user+company"
     

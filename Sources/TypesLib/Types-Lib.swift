@@ -3,11 +3,7 @@ import Fluent
 import MySQLKit
 import FluentMySQLDriver
 
-public class Configuration {
-    @available(*, deprecated)
-    public static var encoder: JSONEncoder = JSONEncoder()
-    @available(*, deprecated)
-    public static var decoder: JSONDecoder = JSONDecoder()
+public actor Configuration: Sendable {
     public var encoder: JSONEncoder
     public var decoder: JSONDecoder
     
@@ -40,7 +36,7 @@ public extension Application {
         self.migrations.add(Accountant.Migration())
     }
     
-    func encoderSetup() {
+    func encoderSetup() async {
         // JSON coding configuration
         let decoder = JSONDecoder()
         let encoder = JSONEncoder()
@@ -49,8 +45,6 @@ public extension Application {
         formater.timeZone = TimeZone(abbreviation: "GMT")
         decoder.dateDecodingStrategy = .formatted(formater)
         encoder.dateEncodingStrategy = .formatted(formater)
-        Configuration.encoder = encoder
-        Configuration.decoder = decoder
         ContentConfiguration.global.use(decoder: decoder, for: .json)
         ContentConfiguration.global.use(encoder: encoder, for: .json)
         appConfiguration = Configuration(encoder: encoder, decoder: decoder)

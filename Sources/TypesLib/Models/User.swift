@@ -8,7 +8,7 @@
 import Vapor
 import Fluent
 
-public enum UserRole: String, Codable {
+public enum UserRole: String, Codable, Sendable {
     
     public static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         return try await database.enum("user_role")
@@ -20,7 +20,7 @@ public enum UserRole: String, Codable {
             .create()
     }
 
-    public static var registerName: String = "userRole"
+    public static let registerName: String = "userRole"
     
     case admin, user, guest, unconfirmed, unconfirmedAdmin
     
@@ -49,11 +49,11 @@ public enum UserRole: String, Codable {
     }
 }
 
-public final class User: Model, Content {
+public final class User: Model, Content, @unchecked Sendable {
     
     public static let schema: String = "users"
-    static var optionField: AnyKeyPath = \User.name
-    static var registerName: String = "user"
+    nonisolated(unsafe) static var optionField: AnyKeyPath = \User.name
+    static let registerName: String = "user"
  
     
     @ID()
@@ -165,11 +165,11 @@ extension User.Confirm: Validatable {
 }
 
 extension User: ModelAuthenticatable {
-    public static let usernameKey = \User.$email
-    public static let passwordHashKey = \User.$passwordHash
+    public static var usernameKey: KeyPath<User, Field<String>> { \.$email }
+    public static var passwordHashKey: KeyPath<User, Field<String>> { \.$passwordHash }
+    
 
     public func verify(password: String) throws -> Bool {
-        print("[JORO] verify user")
         return try Bcrypt.verify(password, created: self.passwordHash)
     }
 }

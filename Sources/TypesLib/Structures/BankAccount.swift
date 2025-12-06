@@ -8,7 +8,7 @@
 import Vapor
 import Fluent
 
-public class BankAccount: PartnerBankAccountProtocol {
+public final class BankAccount: PartnerBankAccountProtocol {
     
     public let bic: String?
     public let name: String

@@ -8,10 +8,11 @@ import Vapor
 import Fluent
 import FluentSQL
 
-public enum SoftwareType: String, Codable {
+public enum SoftwareType: String, Codable, Sendable {
     case crm
     case shame
     case autoRepair
+    case inv
 }
 
 public final class Company: Model, Content, @unchecked Sendable {
