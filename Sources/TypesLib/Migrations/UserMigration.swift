@@ -37,7 +37,6 @@ extension User {
     }
     
     struct AddOTPMigration: AsyncMigration {
-        
         var name: String = "User.AddOTPMigration"
         
         func prepare(on database: any Database) async throws {
