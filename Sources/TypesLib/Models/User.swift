@@ -86,6 +86,9 @@ public final class User: Model, Content, @unchecked Sendable {
     @OptionalField(key: "otp_secret")
     public var otpSecret: UUID?
     
+    @Field(key: "is_otp_confirmed")
+    public var isOTPConfirmed: Bool
+    
     @Timestamp(key: "confirmation_expire", on: .none)
     public var expire: Date?
     
@@ -104,6 +107,7 @@ public final class User: Model, Content, @unchecked Sendable {
         self.confirmationCode = confirmationCode
         self.otpSecret = otpSecret
         self.expire = expire
+        self.isOTPConfirmed = false
     }
 }
 
@@ -135,6 +139,11 @@ public extension User {
     struct OTP: Content {
         public var code: String
         public var email: String
+    }
+    
+    struct OTPConfirm: Content {
+        public var code: String
+        public var secret: String
     }
     
     struct Forgot: Content {
@@ -177,6 +186,13 @@ extension User.Confirm: Validatable {
 extension User.OTP: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("email", as: String.self, is: .email)
+        validations.add("code", as: String.self, is: .count(6...6))
+    }
+}
+
+extension User.OTPConfirm: Validatable {
+    public static func validations(_ validations: inout Validations) {
+        validations.add("secret", as: String.self, is: .email)
         validations.add("code", as: String.self, is: .count(6...6))
     }
 }
