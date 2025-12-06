@@ -232,13 +232,13 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         // Create new database name
         let dbName: String = String(abs((createCompany.uid+userID.uuidString).hash), radix: 16, uppercase: false)
-        guard let sql = req.db as? any MySQLDatabase else {
+        guard let sql = req.db as? any SQLDatabase else {
             throw Abort(.internalServerError, reason: "NoSQLDatabase.")
         }
         req.logger.debug(.init(stringLiteral: "Creating database \(dbName)..."))
         do {
 //            try await sql.raw("CREATE DATABASE `\(unsafeRaw: dbName)`").run()
-            let _ = try await sql.simpleQuery("CREATE DATABASE \(dbName)").get()
+            try await sql.raw("CREATE DATABASE \(unsafeRaw: dbName)").run()
         } catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             throw error
@@ -297,7 +297,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         } catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             req.logger.debug(.init(stringLiteral: "Delete database \(dbName)..."))
-            guard (try? await sql.simpleQuery("DROP DATABASE \(dbName)").get()) != nil else {
+            guard (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw Abort(.internalServerError, reason: "Reverting database creation failed.")
             }
@@ -319,7 +319,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             
             guard (try? await company.$users.detach(user, on: req.db)) != nil,
                   (try? await company.delete(force: true, on: req.db)) != nil,
-                  (try? await sql.simpleQuery("DROP DATABASE \(dbName)").get()) != nil else {
+                  (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw Abort(.internalServerError, reason: "Reverting company creation failed.")
             }
@@ -345,7 +345,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         
         do {
-            guard let sql = req.db as? SQLDatabase else {
+            guard let sql = req.db as? any SQLDatabase else {
                 throw Abort(.internalServerError, reason: "NoSQLDatabase.")
             }
             req.logger.debug(.init(stringLiteral: "Deleting database \(dbName)..."))
@@ -368,7 +368,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         return .ok
     }
     
-    public func changeOwner(to user: User, on db: Database) async throws {
+    public func changeOwner(to user: User, on db: any Database) async throws {
         self.owner = try user.requireID()
         try await self.save(on: db)
     }
