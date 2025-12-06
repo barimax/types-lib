@@ -238,7 +238,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         req.logger.debug(.init(stringLiteral: "Creating database \(dbName)..."))
         do {
 //            try await sql.raw("CREATE DATABASE `\(unsafeRaw: dbName)`").run()
-            try await sql.raw("CREATE DATABASE \(unsafeRaw: dbName)").run()
+            try await sql.raw(.init("CREATE DATABASE \(dbName)")).run()
         } catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             throw error
@@ -297,7 +297,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         } catch {
             req.logger.error(.init(stringLiteral: String(describing: error)))
             req.logger.debug(.init(stringLiteral: "Delete database \(dbName)..."))
-            guard (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
+            guard (try? await sql.raw(.init("DROP DATABASE \(dbName)")).run()) != nil else {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw Abort(.internalServerError, reason: "Reverting database creation failed.")
             }
@@ -319,7 +319,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             
             guard (try? await company.$users.detach(user, on: req.db)) != nil,
                   (try? await company.delete(force: true, on: req.db)) != nil,
-                  (try? await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()) != nil else {
+                  (try? await sql.raw(.init("DROP DATABASE \(dbName)")).run()) != nil else {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw Abort(.internalServerError, reason: "Reverting company creation failed.")
             }
@@ -350,7 +350,7 @@ public final class Company: Model, Content, @unchecked Sendable {
             }
             req.logger.debug(.init(stringLiteral: "Deleting database \(dbName)..."))
             do {
-                try await sql.raw("DROP DATABASE \(unsafeRaw: dbName)").run()
+                try await sql.raw(.init("DROP DATABASE \(dbName)")).run()
             } catch {
                 req.logger.error(.init(stringLiteral: String(describing: error)))
                 throw error
