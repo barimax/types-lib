@@ -109,7 +109,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         case id, deletedAt, createdAt, updatedAt, name, uid, address, configuration, local, owner, currentUserCompanyRoles, database, softwareType
     }
     
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(deletedAt, forKey: .deletedAt)
@@ -232,7 +232,7 @@ public final class Company: Model, Content, @unchecked Sendable {
         }
         // Create new database name
         let dbName: String = String(abs((createCompany.uid+userID.uuidString).hash), radix: 16, uppercase: false)
-        guard let sql = req.db as? MySQLDatabase else {
+        guard let sql = req.db as? any MySQLDatabase else {
             throw Abort(.internalServerError, reason: "NoSQLDatabase.")
         }
         req.logger.debug(.init(stringLiteral: "Creating database \(dbName)..."))

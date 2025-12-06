@@ -28,11 +28,19 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentMySQLDriver", package: "fluent-mysql-driver"),
-            ]
+            ],
+            swiftSettings: swiftSettings
         ),
+        
         .testTarget(
             name: "TypesLibTests",
             dependencies: ["TypesLib"]
         ),
     ]
 )
+
+var swiftSettings: [SwiftSetting] { [
+    .enableUpcomingFeature("ExistentialAny"),
+    .unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"],.when(configuration: .debug)),
+    .unsafeFlags(["-Xfrontend", "-warn-concurrency"], .when(configuration: .debug)),
+] }
