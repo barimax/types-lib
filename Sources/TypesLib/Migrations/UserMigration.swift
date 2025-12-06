@@ -52,4 +52,20 @@ extension User {
         }
         
     }
+    struct AddIsOTPMigration: AsyncMigration {
+        var name: String = "User.AddIsOTPMigration"
+        
+        func prepare(on database: any Database) async throws {
+            try await database.schema(User.schema)
+                .field("is_otp_confirmed", .bool)
+                .update()
+        }
+
+        func revert(on database: any Database) async throws {
+            try await database.schema(Company.schema)
+                .deleteField("is_otp_confirmed")
+                .update()
+        }
+        
+    }
 }
