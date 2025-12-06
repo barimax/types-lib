@@ -13,7 +13,7 @@ extension Accountant {
         
         var name: String = "Accountant.Migration"
         
-        func prepare(on database: Database) async throws {
+        func prepare(on database: any Database) async throws {
             try await database.schema(Accountant.schema)
                 .id()
                 .field("deleted_at", .datetime)
@@ -27,7 +27,7 @@ extension Accountant {
                 .create()
         }
 
-        func revert(on database: Database) async throws {
+        func revert(on database: any Database) async throws {
             try await database.schema(Accountant.schema).delete()
         }
         

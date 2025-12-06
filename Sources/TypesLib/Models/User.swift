@@ -10,7 +10,7 @@ import Fluent
 
 public enum UserRole: String, Codable, Sendable {
     
-    public static func prepareEnumMigration(database: FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
+    public static func prepareEnumMigration(database: any FluentKit.Database) async throws -> FluentKit.DatabaseSchema.DataType {
         return try await database.enum("user_role")
             .case(Self.admin.rawValue)
             .case(Self.user.rawValue)
@@ -83,6 +83,9 @@ public final class User: Model, Content, @unchecked Sendable {
     @OptionalField(key: "confirmation_code")
     public var confirmationCode: String?
     
+    @OptionalField(key: "otp_secret")
+    public var otpSecret: UUID?
+    
     @Timestamp(key: "confirmation_expire", on: .none)
     public var expire: Date?
     
@@ -92,13 +95,14 @@ public final class User: Model, Content, @unchecked Sendable {
     
     public init() { }
 
-    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, expire: Date?) {
+    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, otpSecret: UUID?, expire: Date?) {
         self.id = id
         self.name = name
         self.email = email
         self.passwordHash = passwordHash
         self.userRole = userRole
         self.confirmationCode = confirmationCode
+        self.otpSecret = otpSecret
         self.expire = expire
     }
 }
@@ -127,6 +131,12 @@ public extension User {
         public var email: String
         public var code: String
     }
+    
+    struct OTP: Content {
+        public var code: String
+        public var email: String
+    }
+    
     struct Forgot: Content {
         public var email: String
     }
@@ -158,6 +168,13 @@ extension User.CreateCompanyOwner: Validatable {
 }
 
 extension User.Confirm: Validatable {
+    public static func validations(_ validations: inout Validations) {
+        validations.add("email", as: String.self, is: .email)
+        validations.add("code", as: String.self, is: .count(6...6))
+    }
+}
+
+extension User.OTP: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("email", as: String.self, is: .email)
         validations.add("code", as: String.self, is: .count(6...6))

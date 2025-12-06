@@ -13,7 +13,7 @@ extension User {
         
         var name: String = "User.Migration"
         
-        func prepare(on database: Database) async throws {
+        func prepare(on database: any Database) async throws {
             let userRole = try await UserRole.prepareEnumMigration(database: database)
             try await database.schema(User.schema)
                 .id()
@@ -29,9 +29,27 @@ extension User {
                 .create()
         }
 
-        func revert(on database: Database) async throws {
+        func revert(on database: any Database) async throws {
             try await database.schema(User.schema).delete()
             try await database.enum("user_role").delete()
+        }
+        
+    }
+    
+    struct AddOTPMigration: AsyncMigration {
+        
+        var name: String = "User.AddOTPMigration"
+        
+        func prepare(on database: any Database) async throws {
+            try await database.schema(User.schema)
+                .field("otp_secret", .uuid)
+                .update()
+        }
+
+        func revert(on database: any Database) async throws {
+            try await database.schema(Company.schema)
+                .deleteField("otp_secret")
+                .update()
         }
         
     }

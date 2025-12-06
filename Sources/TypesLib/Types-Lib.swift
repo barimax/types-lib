@@ -34,6 +34,7 @@ public extension Application {
         self.migrations.add(UserCompanyRelation.Migration())
         self.migrations.add(Token.Migration())
         self.migrations.add(Accountant.Migration())
+        self.migrations.add(User.AddOTPMigration())
     }
     
     func encoderSetup() async {
@@ -52,7 +53,7 @@ public extension Application {
 }
 
 public final class TypesLib {
-    public static func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [AsyncMigration]) throws {
+    public static func typesLibConfiguration(_ app: Application, configuration: MySQLConfiguration, migrations: [any AsyncMigration]) throws {
         app.post("spi", "setNewDatabase", ":databaseID") { req async throws  -> HTTPStatus in
             guard let database = req.parameters.get("databaseID") else {
                 req.logger.error("Missing databaseID")

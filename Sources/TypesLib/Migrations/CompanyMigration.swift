@@ -12,7 +12,7 @@ extension Company {
     struct Migration: AsyncMigration {
         var name: String { "Company.Migration" }
         
-        func prepare(on database: Database) async throws {
+        func prepare(on database: any Database) async throws {
             try await database.schema(Company.schema)
                 .id()
                 .field("deleted_at", .datetime)
@@ -28,7 +28,7 @@ extension Company {
                 .create()
         }
 
-        func revert(on database: Database) async throws {
+        func revert(on database: any Database) async throws {
             try await database.schema(Company.schema).delete()
         }
     }
@@ -36,13 +36,13 @@ extension Company {
     struct AddSoftwareType: AsyncMigration {
         var name: String { "Company.AddSoftwareTypeMigration" }
         
-        func prepare(on database: Database) async throws {
+        func prepare(on database: any Database) async throws {
             try await database.schema(Company.schema)
                 .field("software_type", .string, .required)
                 .update()
         }
 
-        func revert(on database: Database) async throws {
+        func revert(on database: any Database) async throws {
             try await database.schema(Company.schema)
                 .deleteField("software_type")
                 .update()

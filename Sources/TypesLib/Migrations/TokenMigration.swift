@@ -13,7 +13,7 @@ extension Token {
         
         var name: String { "Token.Migration" }
         
-        func prepare(on database: FluentKit.Database) async throws {
+        func prepare(on database: any FluentKit.Database) async throws {
             try await database.schema(Token.schema)
                 .id()
                 .field("value", .string, .required)
@@ -22,7 +22,7 @@ extension Token {
                 .create()
         }
         
-        func revert(on database: FluentKit.Database) async throws {
+        func revert(on database: any FluentKit.Database) async throws {
             try await database.schema(Token.schema).delete()
         }
     }

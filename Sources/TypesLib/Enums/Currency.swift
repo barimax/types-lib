@@ -38,13 +38,13 @@ public enum CurrencyCode: String, Codable, CaseIterable, Sendable {
     case ZAR, ZMW, ZWL
     case ZZZ
     // Encode to lowercase string
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
             var container = encoder.singleValueContainer()
             try container.encode(rawValue.uppercased())
         }
 
         // Decode from lowercase string
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
             let container = try decoder.singleValueContainer()
             let value = try container.decode(String.self).uppercased()
             guard let code = CurrencyCode(rawValue: value) else {

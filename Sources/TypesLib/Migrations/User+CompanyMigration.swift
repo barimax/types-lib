@@ -6,7 +6,7 @@ extension UserCompanyRelation {
         
         var name: String = "UserCompanyRalation.Migration"
         
-        func prepare(on database: Database) async throws {
+        func prepare(on database: any Database) async throws {
             try await database.schema(UserCompanyRelation.schema)
                 .id()
                 .field("user_id", .uuid, .references(User.schema, "id"))
@@ -15,7 +15,7 @@ extension UserCompanyRelation {
                 .create()
         }
 
-        func revert(on database: Database) async throws {
+        func revert(on database: any Database) async throws {
             try await database.schema(UserCompanyRelation.schema).delete()
         }
         
