@@ -84,7 +84,7 @@ public final class User: Model, Content, @unchecked Sendable {
     public var confirmationCode: String?
     
     @OptionalField(key: "otp_secret")
-    public var otpSecret: UUID?
+    public var otpSecret: String?
     
     @Field(key: "is_otp_confirmed")
     public var isOTPConfirmed: Bool
@@ -98,7 +98,7 @@ public final class User: Model, Content, @unchecked Sendable {
     
     public init() { }
 
-    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, otpSecret: UUID?, expire: Date?) {
+    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, otpSecret: String?, expire: Date?) {
         self.id = id
         self.name = name
         self.email = email
