@@ -26,45 +26,14 @@ extension User {
                 .field("user_role", userRole, .required)
                 .field("confirmation_code", .string)
                 .field("confirmation_expire", .datetime)
+                .field("otp_secret", .string)
+                .field("is_otp_confirmed", .bool)
                 .create()
         }
 
         func revert(on database: any Database) async throws {
             try await database.schema(User.schema).delete()
             try await database.enum("user_role").delete()
-        }
-        
-    }
-    
-    struct AddOTPMigration: AsyncMigration {
-        var name: String = "User.AddOTPMigration"
-        
-        func prepare(on database: any Database) async throws {
-            try await database.schema(User.schema)
-                .field("otp_secret", .uuid)
-                .update()
-        }
-
-        func revert(on database: any Database) async throws {
-            try await database.schema(Company.schema)
-                .deleteField("otp_secret")
-                .update()
-        }
-        
-    }
-    struct AddIsOTPMigration: AsyncMigration {
-        var name: String = "User.AddIsOTPMigration"
-        
-        func prepare(on database: any Database) async throws {
-            try await database.schema(User.schema)
-                .field("is_otp_confirmed", .bool)
-                .update()
-        }
-
-        func revert(on database: any Database) async throws {
-            try await database.schema(Company.schema)
-                .deleteField("is_otp_confirmed")
-                .update()
         }
         
     }

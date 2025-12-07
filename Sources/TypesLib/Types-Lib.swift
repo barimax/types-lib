@@ -34,8 +34,6 @@ public extension Application {
         self.migrations.add(UserCompanyRelation.Migration())
         self.migrations.add(Token.Migration())
         self.migrations.add(Accountant.Migration())
-        self.migrations.add(User.AddOTPMigration())
-        self.migrations.add(User.AddIsOTPMigration())
     }
     
     func encoderSetup() async {
