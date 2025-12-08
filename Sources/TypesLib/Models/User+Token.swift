@@ -5,11 +5,11 @@
 //  Created by Georgie Ivanov on 14.10.24.
 //
 
-@preconcurrency import Fluent
-@preconcurrency import Vapor
+import Fluent
+import Vapor
+import JWT
 
-@preconcurrency
-public final class Token: Model, Content, @unchecked Sendable {
+public final class UserToken: Model, Content, @unchecked Sendable {
     public static let schema = "tokens"
 
     @ID(key: .id)
@@ -31,9 +31,9 @@ public final class Token: Model, Content, @unchecked Sendable {
 }
 
 
-extension Token: ModelTokenAuthenticatable {
-    public static var valueKey: KeyPath<Token, Field<String>> { \.$value }
-    public static var userKey: KeyPath<Token, Parent<User>> { \.$user }
+extension UserToken: ModelTokenAuthenticatable {
+    public static var valueKey: KeyPath<UserToken, Field<String>> { \.$value }
+    public static var userKey: KeyPath<UserToken, Parent<User>> { \.$user }
 
     public var isValid: Bool {
         true
@@ -41,7 +41,7 @@ extension Token: ModelTokenAuthenticatable {
 }
 
 public extension User {
-    func generateToken() throws -> Token {
+    func generateToken() throws -> UserToken {
         try .init(
             value: [UInt8].random(count: 16).base64,
             userID: self.requireID()
