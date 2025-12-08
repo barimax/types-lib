@@ -50,7 +50,7 @@ public class AuthServer {
     }
     
     
-    func listCompanies() async throws -> [Company] {
+    public func listCompanies() async throws -> [Company] {
         guard let spiHost = request.headers.first(name: "X-spi-host"),
               let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
@@ -66,7 +66,7 @@ public class AuthServer {
         return try userResponse.content.decode([Company].self)
     }
     
-    func getCompany(id: UUID) async throws -> Company {
+    public func getCompany(id: UUID) async throws -> Company {
         guard let spiHost = request.headers.first(name: "X-spi-host"),
               let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
@@ -82,23 +82,23 @@ public class AuthServer {
         return try userResponse.content.decode(Company.self)
     }
     
-    func requireUserId() throws -> UUID {
+    public func requireUserId() throws -> UUID {
         let jwtToken = try getJWTPayload()
         return jwtToken.userId
     }
     
     @available(*, deprecated)
-    var companyDatabaseID: String? {
+    public var companyDatabaseID: String? {
         request.headers.first(name: "X-company-database")
     }
     @available(*, deprecated)
-    var companyID: String? {
+    public var companyID: String? {
         request.headers.first(name: "X-company-id")
     }
     
     // BusinessType is important to load in menu models needed
     @available(*, deprecated)
-    var businessType: BusinessType? {
+    public var businessType: BusinessType? {
         guard let businessTypeString = request.headers.first(name: "X-business-type"),
               let businessType = BusinessType(rawValue: businessTypeString) else {
             return nil
