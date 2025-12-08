@@ -7,24 +7,24 @@
 import Vapor
 import Fluent
 
-final class Passkey: Model, Content, @unchecked Sendable {
-    static let schema = "passkeys"
+public final class Passkey: Model, Content, @unchecked Sendable {
+    public static let schema = "passkeys"
 
     @ID(custom: "id", generatedBy: .user) // credential ID is string
-    var id: String?
+    public var id: String?
 
     @Field(key: "public_key")
-    var publicKey: String // base64url
+    public var publicKey: String // base64url
 
     @Field(key: "sign_count")
-    var currentSignCount: Int
+    public var currentSignCount: Int
 
     @Parent(key: "user_id")
-    var user: User
+    public var user: User
 
-    init() {}
+    public init() {}
 
-    init(
+    public init(
         id: String,
         publicKey: String,
         currentSignCount: Int,
