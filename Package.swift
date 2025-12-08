@@ -44,6 +44,6 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] { [
     .enableUpcomingFeature("ExistentialAny"),
-    .unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"],.when(configuration: .debug)),
-    .unsafeFlags(["-Xfrontend", "-warn-concurrency"], .when(configuration: .debug)),
+//    .unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"],.when(configuration: .debug)),
+//    .unsafeFlags(["-Xfrontend", "-warn-concurrency"], .when(configuration: .debug)),
 ] }
