@@ -7,10 +7,27 @@
 
 import Vapor
 import Fluent
+import WebAuthn
 
 public extension Request {
     var authServer: AuthServer {
         AuthServer(request: self)
+    }
+    
+    var webAuthn: WebAuthnManager  {
+        get async throws {
+            guard let appConfig = self.application.configuration else {
+                throw Abort(.internalServerError, reason: "Missing app config")
+            }
+            return WebAuthnManager(
+                configuration: WebAuthnManager.Configuration(
+                    // For production, this should be your real domain (without scheme)
+                    relyingPartyID: appConfig.relyingPartyID,
+                    relyingPartyName: appConfig.relyingPartyName,
+                    relyingPartyOrigin: appConfig.relyingPartyOrigin
+                )
+            )
+        }
     }
 }
 

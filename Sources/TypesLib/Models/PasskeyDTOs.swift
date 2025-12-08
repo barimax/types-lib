@@ -7,6 +7,7 @@
 
 
 import WebAuthn
+import Vapor
 
 // Wrapper so JSON matches what WebAuthn/Flutter expect: { "publicKey": { ... } }
 struct CreationOptionsResponse: Content {

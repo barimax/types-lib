@@ -1,4 +1,13 @@
-final class Passkey: Model, Content {
+//
+//  Passkey.swift
+//  types-lib
+//
+//  Created by Georgie Ivanov on 8.12.25.
+//
+import Vapor
+import Fluent
+
+final class Passkey: Model, Content, @unchecked Sendable {
     static let schema = "passkeys"
 
     @ID(custom: "id", generatedBy: .user) // credential ID is string
