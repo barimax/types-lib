@@ -10,19 +10,19 @@ import WebAuthn
 import Vapor
 
 // Wrapper so JSON matches what WebAuthn/Flutter expect: { "publicKey": { ... } }
-struct CreationOptionsResponse: Content {
+public struct CreationOptionsResponse: Content {
     let publicKey: PublicKeyCredentialCreationOptions
 }
 
-struct RequestOptionsResponse: Content {
+public struct RequestOptionsResponse: Content {
     let publicKey: PublicKeyCredentialRequestOptions
 }
 
-struct StartRegisterRequest: Content {
+public struct StartRegisterRequest: Content {
     let email: String
     let displayName: String?
 }
 
-struct StartLoginRequest: Content {
+public struct StartLoginRequest: Content {
     let email: String
 }
