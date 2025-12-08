@@ -227,4 +227,7 @@ extension User {
     public func jwtTokenPayload() throws -> User.JWTToken {
         .init(userId: try self.requireID())
     }
+    public func jwtSignedToken(req: Request) async throws -> String {
+        return try await req.jwt.sign(self.jwtTokenPayload())
+    }
 }
