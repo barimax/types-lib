@@ -22,3 +22,11 @@ public struct OTPSecret: Content {
         self.secret = secret
     }
 }
+
+public struct Token: Content {
+    public let token: String
+    
+    public init(token: String) {
+        self.token = token
+    }
+}

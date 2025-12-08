@@ -18,6 +18,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         .package(url: "https://github.com/vapor/fluent-mysql-driver.git", from: "4.4.0"),
+        // JWT
+        .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -28,6 +30,7 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentMySQLDriver", package: "fluent-mysql-driver"),
+                .product(name: "JWT", package: "jwt"),
             ],
             swiftSettings: swiftSettings
         ),

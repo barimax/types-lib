@@ -9,47 +9,54 @@ import Vapor
 import Fluent
 
 public extension Request {
-    func authUser(token: String) async throws -> User {
-        guard let spiHost = self.headers.first(name: "X-spi-host") else {
-            throw Abort(.unauthorized)
-        }
-        let userResponse = try await self.client.get(
-            "http://\(spiHost)/spi/user/auth/",
-            headers: [
-                "Authorization": "Bearer \(token)",
-                "Content-Type": "application/json",
-            ]
-        )
-        self.application.logger.debug("User: \(userResponse)")
-        let user = try userResponse.content.decode(User.self)
-        return user
+    var authServer: AuthServer {
+        AuthServer(request: self)
     }
-    func user() async throws -> User {
-        guard let spiHost = self.headers.first(name: "X-spi-host"),
-              let userIDString = self.headers.first(name: "X-auth-user-id"),
-              let token = self.headers.bearerAuthorization?.token else {
-            throw Abort(.unauthorized)
+}
+
+public class AuthServer {
+    let request: Request
+    
+    init(request: Request) {
+        self.request = request
+    }
+    
+    public func jwtVerify() throws -> HTTPStatus {
+        let _ = try getJWTPayload()
+        return .ok
+    }
+    
+    public func getJWTPayload() throws -> User.JWTToken {
+        try request.auth.require(User.JWTToken.self)
+    }
+    
+    public func requestUser() async throws -> User {
+        let jwtToken = try getJWTPayload()
+        guard let spiHost = request.headers.first(name: "X-spi-host"),
+              let token = request.headers.bearerAuthorization?.token else {
+            throw Abort(.badRequest, reason: "Missing X-spi-host header.")
         }
         
-        let userResponse = try await self.client.get(
-            "http://\(spiHost)/spi/user/get/\(userIDString)",
+        let userResponse = try await request.client.get(
+            "http://\(spiHost)/spi/user/get/\(jwtToken.userId.uuidString)",
             headers: [
                 "Authorization": "Bearer \(token)",
                 "Content-Type": "application/json",
             ]
         )
-        self.application.logger.debug("User: \(userResponse)")
+        request.application.logger.debug("User: \(userResponse)")
         let user = try userResponse.content.decode(User.self)
         return user
     }
     
+    
     func listCompanies() async throws -> [Company] {
-        guard let spiHost = self.headers.first(name: "X-spi-host"),
-              let token = self.headers.bearerAuthorization?.token else {
+        guard let spiHost = request.headers.first(name: "X-spi-host"),
+              let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
         }
         
-        let userResponse = try await self.client.get(
+        let userResponse = try await request.client.get(
             "http://\(spiHost)/spi/company/get",
             headers: [
                 "Authorization": "Bearer \(token)",
@@ -60,12 +67,12 @@ public extension Request {
     }
     
     func getCompany(id: UUID) async throws -> Company {
-        guard let spiHost = self.headers.first(name: "X-spi-host"),
-              let token = self.headers.bearerAuthorization?.token else {
+        guard let spiHost = request.headers.first(name: "X-spi-host"),
+              let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
         }
         
-        let userResponse = try await self.client.get(
+        let userResponse = try await request.client.get(
             "http://\(spiHost)/spi/company/get/\(id)",
             headers: [
                 "Authorization": "Bearer \(token)",
@@ -75,23 +82,24 @@ public extension Request {
         return try userResponse.content.decode(Company.self)
     }
     
-    var userID: UUID? {
-        guard let userIDString = self.headers.first(name: "X-auth-user-id"),
-              let userUUID = UUID(uuidString: userIDString) else {
-            return nil
-        }
-        return userUUID
+    func requireUserId() throws -> UUID {
+        let jwtToken = try getJWTPayload()
+        return jwtToken.userId
     }
+    
+    @available(*, deprecated)
     var companyDatabaseID: String? {
-        self.headers.first(name: "X-company-database")
+        request.headers.first(name: "X-company-database")
     }
+    @available(*, deprecated)
     var companyID: String? {
-        self.headers.first(name: "X-company-id")
+        request.headers.first(name: "X-company-id")
     }
     
     // BusinessType is important to load in menu models needed
+    @available(*, deprecated)
     var businessType: BusinessType? {
-        guard let businessTypeString = self.headers.first(name: "X-business-type"),
+        guard let businessTypeString = request.headers.first(name: "X-business-type"),
               let businessType = BusinessType(rawValue: businessTypeString) else {
             return nil
         }

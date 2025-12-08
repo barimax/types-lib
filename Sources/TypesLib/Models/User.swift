@@ -7,6 +7,7 @@
 
 import Vapor
 import Fluent
+import JWT
 
 public enum UserRole: String, Codable, Sendable {
     
@@ -136,14 +137,8 @@ public extension User {
         public var code: String
     }
     
-    struct OTP: Content {
-        public var code: String
-        public var email: String
-    }
-    
     struct OTPConfirm: Content {
         public var code: String
-        public var secret: String
     }
     
     struct Forgot: Content {
@@ -154,6 +149,22 @@ public extension User {
         public var code: String
         public var password: String
         public var confirmPassword: String
+    }
+    struct JWTToken: Content {
+        static let expirationTime: TimeInterval = 60 * 15
+        
+        var expiration: ExpirationClaim
+        var userId: UUID
+
+        init(userId: UUID) {
+            self.userId = userId
+            self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTToken.expirationTime))
+        }
+        
+        init(with user: User) throws {
+            self.userId = try user.requireID()
+            self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTToken.expirationTime))
+        }
     }
 }
 extension User.Create: Validatable {
@@ -183,13 +194,6 @@ extension User.Confirm: Validatable {
     }
 }
 
-extension User.OTP: Validatable {
-    public static func validations(_ validations: inout Validations) {
-        validations.add("email", as: String.self, is: .email)
-        validations.add("code", as: String.self, is: .count(6...6))
-    }
-}
-
 extension User.OTPConfirm: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("secret", as: String.self, is: .email)
@@ -207,3 +211,20 @@ extension User: ModelAuthenticatable {
     }
 }
 extension User: ModelSessionAuthenticatable { }
+
+extension User.JWTToken: Authenticatable, JWTPayload {
+    public func verify(using algorithm: some JWTAlgorithm) throws {
+        try expiration.verifyNotExpired()
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "uid"
+        case expiration = "exp"
+    }
+}
+
+extension User {
+    public func jwtTokenPayload() throws -> User.JWTToken {
+        .init(userId: try self.requireID())
+    }
+}

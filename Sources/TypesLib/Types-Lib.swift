@@ -32,7 +32,7 @@ public extension Application {
         self.migrations.add(Company.AddSoftwareType())
         self.migrations.add(User.Migration())
         self.migrations.add(UserCompanyRelation.Migration())
-        self.migrations.add(Token.Migration())
+        self.migrations.add(UserToken.Migration())
         self.migrations.add(Accountant.Migration())
     }
     

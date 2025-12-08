@@ -8,13 +8,13 @@
 import Fluent
 import Vapor
 
-extension Token {
+extension UserToken {
     struct Migration: AsyncMigration {
         
         var name: String { "Token.Migration" }
         
         func prepare(on database: any FluentKit.Database) async throws {
-            try await database.schema(Token.schema)
+            try await database.schema(UserToken.schema)
                 .id()
                 .field("value", .string, .required)
                 .field("user_id", .uuid, .required, .references(User.schema, "id"))
@@ -23,7 +23,7 @@ extension Token {
         }
         
         func revert(on database: any FluentKit.Database) async throws {
-            try await database.schema(Token.schema).delete()
+            try await database.schema(UserToken.schema).delete()
         }
     }
 }
