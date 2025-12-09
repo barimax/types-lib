@@ -154,7 +154,7 @@ public extension User {
         static let expirationTime: TimeInterval = 60 * 15
         
         var expiration: ExpirationClaim
-        var userId: UUID
+        public var userId: UUID
 
         init(userId: UUID) {
             self.userId = userId
