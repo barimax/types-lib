@@ -6,18 +6,18 @@
 //
 import Vapor
 
-public struct MyConfigurationKey: StorageKey {
-    public typealias Value = AppConfig
-}
-
-public extension Application {
-    var configuration: AppConfig? {
-        get {
-            self.storage[MyConfigurationKey.self]
-        }
-        set {
-            self.storage[MyConfigurationKey.self] = newValue
-        }
-    }
-    
-}
+//public struct MyConfigurationKey: StorageKey {
+//    public typealias Value = AppConfig
+//}
+//
+//public extension Application {
+//    var configuration: AppConfig? {
+//        get {
+//            self.storage[MyConfigurationKey.self]
+//        }
+//        set {
+//            self.storage[MyConfigurationKey.self] = newValue
+//        }
+//    }
+//    
+//}
