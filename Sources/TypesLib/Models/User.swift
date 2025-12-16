@@ -139,7 +139,7 @@ public extension User {
     struct Confirm: Content {
         public var email: String
         public var code: String
-        public var challange: String
+        public var challenge: String
     }
 
     
