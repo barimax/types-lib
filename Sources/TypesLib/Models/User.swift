@@ -84,6 +84,9 @@ public final class User: Model, Content, @unchecked Sendable {
     @OptionalField(key: "confirmation_code")
     public var confirmationCode: String?
     
+    @OptionalField(key: "confirmation_challange")
+    public var confirmationChallange: String?
+    
     @OptionalField(key: "otp_secret")
     public var otpSecret: String?
     
@@ -99,7 +102,7 @@ public final class User: Model, Content, @unchecked Sendable {
     
     public init() { }
 
-    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, otpSecret: String?, expire: Date?) {
+    public init(id: UUID? = nil, name: String, email: String, passwordHash: String, userRole: UserRole, confirmationCode: String?, confirmationChallange:String?, otpSecret: String?, expire: Date?) {
         self.id = id
         self.name = name
         self.email = email
@@ -109,6 +112,7 @@ public final class User: Model, Content, @unchecked Sendable {
         self.otpSecret = otpSecret
         self.expire = expire
         self.isOTPConfirmed = false
+        self.confirmationChallange = confirmationChallange
     }
 }
 
@@ -135,11 +139,9 @@ public extension User {
     struct Confirm: Content {
         public var email: String
         public var code: String
+        public var challange: String
     }
-    
-    struct OTPConfirm: Content {
-        public var code: String
-    }
+
     
     struct Forgot: Content {
         public var email: String
@@ -191,13 +193,7 @@ extension User.Confirm: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("email", as: String.self, is: .email)
         validations.add("code", as: String.self, is: .count(6...6))
-    }
-}
-
-extension User.OTPConfirm: Validatable {
-    public static func validations(_ validations: inout Validations) {
-        validations.add("secret", as: String.self, is: .email)
-        validations.add("code", as: String.self, is: .count(6...6))
+        validations.add("challange", as: String.self, is: !.empty)
     }
 }
 

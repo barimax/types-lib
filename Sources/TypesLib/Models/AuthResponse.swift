@@ -9,9 +9,11 @@ import Vapor
 
 public struct LoginResponse: Content {
     public let isOTP: Bool
+    public let challenge: String?
     
-    public init(isOTP: Bool) {
+    public init(isOTP: Bool, challange: String?) {
         self.isOTP = isOTP
+        self.challenge = challange
     }
 }
 
@@ -25,8 +27,12 @@ public struct OTPSecret: Content {
 
 public struct Token: Content {
     public let token: String
+    public let isOTP: Bool?
+    public let isPasskeyEnabled: Bool
     
-    public init(token: String) {
+    public init(token: String, isOTP: Bool?, isPasskeyEnabled: Bool) {
         self.token = token
+        self.isOTP = isOTP
+        self.isPasskeyEnabled = isPasskeyEnabled
     }
 }

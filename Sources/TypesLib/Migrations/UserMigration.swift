@@ -25,6 +25,7 @@ extension User {
                 .field("password_hash", .string, .required)
                 .field("user_role", userRole, .required)
                 .field("confirmation_code", .string)
+                .field("confirmation_challange", .string)
                 .field("confirmation_expire", .datetime)
                 .field("otp_secret", .string)
                 .field("is_otp_confirmed", .bool)
