@@ -193,7 +193,7 @@ extension User.Confirm: Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("email", as: String.self, is: .email)
         validations.add("code", as: String.self, is: .count(6...6))
-        validations.add("challange", as: String.self, is: !.empty)
+        validations.add("challenge", as: String.self, is: !.empty)
     }
 }
 
