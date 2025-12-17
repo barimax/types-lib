@@ -29,10 +29,16 @@ public struct Token: Content {
     public let token: String
     public let isOTP: Bool?
     public let isPasskeyEnabled: Bool
+    public let userId: String
+    public let email: String
+    public let name: String
     
-    public init(token: String, isOTP: Bool?, isPasskeyEnabled: Bool) {
+    public init(token: String, isOTP: Bool?, isPasskeyEnabled: Bool, userId: String, email: String, name: String) {
         self.token = token
         self.isOTP = isOTP
         self.isPasskeyEnabled = isPasskeyEnabled
+        self.userId = userId
+        self.email = email
+        self.name = name
     }
 }
