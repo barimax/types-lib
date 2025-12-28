@@ -151,6 +151,7 @@ public extension User {
         public var code: String
         public var password: String
         public var confirmPassword: String
+        public var challenge: String
     }
     struct JWTToken: Content {
         static let expirationTime: TimeInterval = 60 * 60 * 24
