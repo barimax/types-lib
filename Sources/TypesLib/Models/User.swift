@@ -154,7 +154,7 @@ public extension User {
         public var challenge: String
     }
     struct JWTToken: Content {
-        static let expirationTime: TimeInterval = 60 * 60 * 24
+        static let expirationTime: TimeInterval = 60 * 60 * 24 * 7
         
         var expiration: ExpirationClaim
         public var userId: UUID
@@ -223,5 +223,8 @@ extension User.JWTToken: Authenticatable, JWTPayload {
 extension User {
     public func jwtTokenPayload() throws -> User.JWTToken {
         .init(userId: try self.requireID())
+    }
+    public func jwtSignedToken(req: Request) async throws -> String {
+        return try await req.jwt.sign(self.jwtTokenPayload())
     }
 }
