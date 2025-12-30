@@ -158,9 +158,11 @@ public extension User {
         
         var expiration: ExpirationClaim
         public var userId: UUID
+        public var companyId: UUID?
 
-        init(userId: UUID) {
+        init(userId: UUID, companyId: UUID?) {
             self.userId = userId
+            self.companyId = companyId
             self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTToken.expirationTime))
         }
         
@@ -221,10 +223,10 @@ extension User.JWTToken: Authenticatable, JWTPayload {
 }
 
 extension User {
-    public func jwtTokenPayload() throws -> User.JWTToken {
-        .init(userId: try self.requireID())
+    public func jwtTokenPayload(companyId: UUID?) throws -> User.JWTToken {
+        .init(userId: try self.requireID(), companyId: companyId)
     }
-    public func jwtSignedToken(req: Request) async throws -> String {
-        return try await req.jwt.sign(self.jwtTokenPayload())
+    public func jwtSignedToken(req: Request, companyId: UUID? = nil) async throws -> String {
+        return try await req.jwt.sign(self.jwtTokenPayload(companyId: companyId))
     }
 }
