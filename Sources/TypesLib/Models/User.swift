@@ -226,7 +226,7 @@ extension User {
     public func jwtTokenPayload(companyId: UUID?) throws -> User.JWTToken {
         .init(userId: try self.requireID(), companyId: companyId)
     }
-    public func jwtSignedToken(req: Request, companyId: UUID? = nil) async throws -> String {
+    public func jwtSignedToken(req: Request, companyId: UUID?) async throws -> String {
         return try await req.jwt.sign(self.jwtTokenPayload(companyId: companyId))
     }
 }
