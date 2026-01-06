@@ -88,17 +88,16 @@ public class AuthServer {
         return jwtToken.userId
     }
     
-    @available(*, deprecated)
+    
     public var companyDatabaseID: String? {
         request.headers.first(name: "X-company-database")
     }
-    @available(*, deprecated)
+    
     public var companyID: String? {
         request.headers.first(name: "X-company-id")
     }
     
     // BusinessType is important to load in menu models needed
-    @available(*, deprecated)
     public var businessType: BusinessType {
         guard let businessTypeString = request.headers.first(name: "X-business-type"),
               let businessType = BusinessType(rawValue: businessTypeString) else {
