@@ -6,5 +6,5 @@
 //
 
 public enum BusinessType: String, CaseIterable, Codable {
-    case ddd, common, vet, automotive, none
+    case ddd, common, vet, automotive, invoice, none
 }
