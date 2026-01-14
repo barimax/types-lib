@@ -8,6 +8,7 @@
 import Vapor
 import Fluent
 import WebAuthn
+import JWTKit
 
 public extension Request {
     var authServer: AuthServer {
@@ -86,8 +87,22 @@ public class AuthServer {
         return try userResponse.content.decode(Company.self)
     }
     
-    public func requireUserId() throws -> UUID {
-        let jwtToken = try getJWTPayload()
+    public func getJWKs() async throws -> JWKS {
+        guard let spiHost = request.headers.first(name: "X-spi-host") else {
+            throw Abort(.badRequest, reason: "Missing X-spi-host header in get JWKs request.")
+        }
+        let response = try await request.client.get("http://\(spiHost)/.well-known/jwks.json")
+        return try response.content.decode(JWKS.self)
+    }
+    
+    public func requireUserId() async throws -> UUID {
+        guard let token = request.headers.bearerAuthorization?.token else {
+            throw Abort(.unauthorized, reason: "Missing Authorization Bearer token.")
+        }
+        let jwks = try await getJWKs()
+        let keys = JWTKeyCollection()
+        try await keys.add(jwks: jwks)
+        let jwtToken = try await keys.verify(token, as: User.JWTToken.self, iteratingKeys: true)
         return jwtToken.userId
     }
     
