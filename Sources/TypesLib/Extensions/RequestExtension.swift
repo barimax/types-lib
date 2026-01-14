@@ -32,14 +32,13 @@ public class AuthServer {
     }
     
     public func requestUser() async throws -> User {
-        let jwtToken = try getJWTPayload()
         guard let spiHost = request.headers.first(name: "X-spi-host"),
               let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.badRequest, reason: "Missing X-spi-host header.")
         }
         
         let userResponse = try await request.client.get(
-            "http://\(spiHost)/spi/user/get/\(jwtToken.userId.uuidString)",
+            "http://\(spiHost)/auth/user",
             headers: [
                 "Authorization": "Bearer \(token)",
                 "Content-Type": "application/json",
@@ -53,15 +52,17 @@ public class AuthServer {
     
     public func listCompanies() async throws -> [Company] {
         guard let spiHost = request.headers.first(name: "X-spi-host"),
+              let appType = request.headers.first(name: "X-app-type"),
               let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
         }
         
         let userResponse = try await request.client.get(
-            "http://\(spiHost)/spi/company/get",
+            "http://\(spiHost)/auth/company",
             headers: [
                 "Authorization": "Bearer \(token)",
                 "Content-Type": "application/json",
+                "X-app-type": appType,
             ]
             )
         return try userResponse.content.decode([Company].self)
@@ -69,15 +70,17 @@ public class AuthServer {
     
     public func getCompany(id: UUID) async throws -> Company {
         guard let spiHost = request.headers.first(name: "X-spi-host"),
+              let appType = request.headers.first(name: "X-app-type"),
               let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized)
         }
         
         let userResponse = try await request.client.get(
-            "http://\(spiHost)/spi/company/get/\(id)",
+            "http://\(spiHost)/auth/company/\(id)",
             headers: [
                 "Authorization": "Bearer \(token)",
                 "Content-Type": "application/json",
+                "X-app-type": appType,
             ]
             )
         return try userResponse.content.decode(Company.self)
