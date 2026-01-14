@@ -106,8 +106,15 @@ public class AuthServer {
         print("[JORO] keys \(keys)")
         try await keys.add(jwks: jwks)
         print("[JORO] start verify")
-        let jwtToken = try await keys.verify(token, as: User.JWTToken.self, iteratingKeys: true)
-        return jwtToken.userId
+        do {
+            let jwtToken = try await keys.verify(token, as: User.JWTToken.self, iteratingKeys: true)
+            return jwtToken.userId
+        } catch {
+            request.logger.error("JWT verify failed: \(String(reflecting: error))")
+            throw Abort(.unauthorized, reason: "JWT verification failed: \(error)")
+        }
+//        let jwtToken = try await keys.verify(token, as: User.JWTToken.self, iteratingKeys: true)
+//        return jwtToken.userId
     }
     
     
