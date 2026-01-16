@@ -68,7 +68,7 @@ public final class TypesLib {
             req.logger.info("[JORO] Database migration count \(migrations.count)")
             try await migrateOnly(
                 app,
-                configuration: configuration,
+                configuration: mysqlConfig,
                 dbID: databaseID,
                 migrations: migrations
             )
