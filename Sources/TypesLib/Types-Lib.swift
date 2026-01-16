@@ -65,14 +65,49 @@ public final class TypesLib {
             mysqlConfig.database = database
             mysqlConfig.tlsConfiguration = tls
             req.logger.info("[JORO] New database configuration done.")
-            app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
             req.logger.info("[JORO] Database migration count \(migrations.count)")
-            app.migrations.add(migrations, to: databaseID)
-            try await app.autoMigrate()
+            try await migrateOnly(
+                app,
+                configuration: configuration,
+                dbID: databaseID,
+                migrations: migrations
+            )
+            req.logger.info("[JORO] Database migration done.")
+            app.databases.use(.mysql(configuration: mysqlConfig), as: databaseID)
+            req.logger.info("[JORO] Database registered to app.databases.")
+//            app.migrations.add(migrations, to: databaseID)
+//            try await app.autoMigrate()
             
             return .ok
         }
     }
 }
 
+func migrateOnly(_ app: Application,configuration: MySQLConfiguration, dbID: DatabaseID, migrations: [any AsyncMigration]) async throws {
+    let localDatabases = Databases(
+            threadPool: app.threadPool,
+            on: app.eventLoopGroup,
+        )
+    localDatabases.use(.mysql(configuration: configuration), as: dbID)
+    // 1) Build a local migration registry (do NOT touch app.migrations)
+    let localMigrations = Migrations()
+
+    // Add migrations targeted to this dbID
+    localMigrations.add(migrations, to: dbID)
+
+    // 2) Build a Migrator that only knows about THIS database
+    // Databases is app.databases; but we want to limit to one DB.
+    // FluentKit Migrator initializer accepts Databases + Migrations.
+    // We'll create a shallow "Databases" view by using app.databases but only invoking on dbID.
+    let migrator = Migrator(
+        databases: localDatabases,
+        migrations: localMigrations,
+        logger: app.logger,
+        on: app.eventLoopGroup.next()
+    )
+
+    // 3) Run migration only for that database
+    try await migrator.setupIfNeeded().get()
+    try await migrator.prepareBatch().get()
+}
 
