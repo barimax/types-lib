@@ -89,6 +89,7 @@ func migrateOnly(_ app: Application,configuration: MySQLConfiguration, dbID: Dat
             on: app.eventLoopGroup,
         )
     localDatabases.use(.mysql(configuration: configuration), as: dbID)
+    
     // 1) Build a local migration registry (do NOT touch app.migrations)
     let localMigrations = Migrations()
 
@@ -107,7 +108,14 @@ func migrateOnly(_ app: Application,configuration: MySQLConfiguration, dbID: Dat
     )
 
     // 3) Run migration only for that database
-    try await migrator.setupIfNeeded().get()
-    try await migrator.prepareBatch().get()
+    
+    do {
+        try await migrator.setupIfNeeded().get()
+            try await migrator.prepareBatch().get()
+            await localDatabases.shutdownAsync()
+        } catch {
+            await localDatabases.shutdownAsync()
+            throw error
+        }
 }
 
