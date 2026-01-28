@@ -171,6 +171,23 @@ public extension User {
             self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTToken.expirationTime))
         }
     }
+    
+    struct JWTWSTicket: Content {
+        static let expirationTime: TimeInterval = 60
+        
+        var expiration: ExpirationClaim
+        public var userId: UUID
+
+        init(userId: UUID) {
+            self.userId = userId
+            self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTWSTicket.expirationTime))
+        }
+        
+        init(with user: User) throws {
+            self.userId = try user.requireID()
+            self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTWSTicket.expirationTime))
+        }
+    }
 }
 extension User.Create: Validatable {
     public static func validations(_ validations: inout Validations) {
@@ -212,6 +229,16 @@ extension User: ModelAuthenticatable {
 extension User: ModelSessionAuthenticatable { }
 
 extension User.JWTToken: Authenticatable, JWTPayload {
+    public func verify(using algorithm: some JWTAlgorithm) throws {
+        try expiration.verifyNotExpired()
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "uid"
+        case expiration = "exp"
+    }
+}
+extension User.JWTWSTicket: Authenticatable, JWTPayload {
     public func verify(using algorithm: some JWTAlgorithm) throws {
         try expiration.verifyNotExpired()
     }

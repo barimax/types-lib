@@ -99,13 +99,9 @@ public class AuthServer {
         guard let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized, reason: "Missing Authorization Bearer token.")
         }
-        print("[JORO] token \(token)")
         let jwks = try await getJWKs()
-        print("[JORO] jwks \(jwks)")
         let keys = JWTKeyCollection()
-        print("[JORO] keys \(keys)")
         try await keys.add(jwks: jwks)
-        print("[JORO] start verify")
         do {
             let jwtToken = try await keys.verify(token, as: User.JWTToken.self, iteratingKeys: true)
             return jwtToken.userId
