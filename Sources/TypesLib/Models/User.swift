@@ -178,7 +178,7 @@ public extension User {
         var expiration: ExpirationClaim
         public var userId: UUID
 
-        init(userId: UUID) {
+        public init(userId: UUID) {
             self.userId = userId
             self.expiration = ExpirationClaim(value: Date().addingTimeInterval(JWTWSTicket.expirationTime))
         }
