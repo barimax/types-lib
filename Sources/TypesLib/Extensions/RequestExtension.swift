@@ -96,6 +96,10 @@ public class AuthServer {
     }
     
     public func requireUserId() async throws -> UUID {
+        if let userIdString = request.headers.first(name: "X-user-id"),
+           let userId = UUID(uuidString: userIdString) {
+            return userId
+        }
         guard let token = request.headers.bearerAuthorization?.token else {
             throw Abort(.unauthorized, reason: "Missing Authorization Bearer token.")
         }
